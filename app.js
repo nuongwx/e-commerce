@@ -2,18 +2,24 @@ var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
+var session = require('express-session');
+var passport = require('passport');
 var logger = require('morgan');
+
+var db = require("./models/index.js");
+
+var SequelizeStore = require('connect-session-sequelize')(session.Store);
+
 
 var homeRouter = require('./routes/home/index');
 var cartRouter = require('./routes/cart/cart');
 var shopRouter = require('./routes/shop/shop');
 var checkoutRouter = require('./routes/checkout/checkout');
+var authRouter = require('./routes/auth/router');
+var profileRouter = require('./routes/user/profile');
 
 
-// var productRouter = require('./routes/user/product');
 
-// var checkoutRouter = require('./views/user/checkout/checkout.js');
-// var usersRouter = require('./routes/user/users');
 
 var app = express();
 
@@ -27,36 +33,48 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+
+app.use(session({
+    store: new SequelizeStore({
+        db: db.sequelize,
+        checkExpirationInterval: 15 * 60 * 1000,
+        expiration: 24 * 60 * 60 * 1000
+    }),
+    secret: 'keyboard cat',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false }
+}));
+
+app.use(passport.authenticate('session'));
+
 app.use('/', homeRouter);
-// app.use('/index', homeRouter);
-// app.use('/about', homeRouter);
-// app.use('/contact', homeRouter);
 
 app.use('/shop', shopRouter);
-// app.use('/product', productRouter);
-// app.use('/shop/:id*', shopRouter);
+
 app.use('/cart', cartRouter);
 
-app.use('/checkout*', checkoutRouter);
+app.use('/checkout', checkoutRouter);
 
-// app.use('/single-product*', productRouter);
+app.use('/auth', authRouter);
 
-// app.use('/users', usersRouter);
+app.use('/user', profileRouter);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
+app.use(function (req, res, next) {
+    next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+app.use(function (err, req, res, next) {
+    // set locals, only providing error in development
+    res.locals.message = err.message;
+    res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+    // render the error page
+    res.status(err.status || 500);
+    res.render('error');
 });
+
 
 module.exports = app;

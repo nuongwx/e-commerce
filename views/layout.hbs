@@ -106,14 +106,28 @@
                                         <li><a href="single-news">Single News</a></li>
                                     </ul>
                                 </li> --}}
+                                <!--
                                 <li><a href="/contact">Contact</a></li>
-
                                 <li>
-                                    <div class="header-icons">
+                                    {{!-- <div class="header-icons"> --}}
                                         <a class="shopping-cart" href="/cart"><i class="fas fa-shopping-cart"></i></a>
-                                        <a class="mobile-hide search-bar-icon" href="#"><i
-                                                class="fas fa-search"></i></a>
-                                    </div>
+                                </li>
+                                <li><a class="mobile-hide search-bar-icon" href="#"><i
+                                            class="fas fa-search">Search</i></a></li>
+                                            -->
+                                <li><a class="fas fa-user-circle" href="/user/profile"></a>
+                                    {{#if user}}
+                                    <ul class="sub-menu">
+                                        <li><a href="/user/profile">Profile</a></li>
+                                        <!-- <li><a href="/cart">Cart</a></li> -->
+                                        <li><a href="/auth/logout">Logout</a></li>
+                                    </ul>
+                                    {{else}}
+                                    <ul class="sub-menu">
+                                        <li><a href="/auth/login">Login</a></li>
+                                        <li><a href="/auth/register">Register</a></li>
+                                    </ul>
+                                    {{/if}}
                                 </li>
                             </ul>
                         </nav>
@@ -148,7 +162,6 @@
 
 
     {{{body}}}
-
 
     <!-- footer -->
     <div class="footer-area">
