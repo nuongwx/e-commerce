@@ -49,6 +49,9 @@
     <!-- responsive -->
     <link rel="stylesheet" href="/assets/css/responsive.css">
 
+    {{!--
+    <link rel="stylesheet" href="/assets/css/slider.css"> --}}
+
 </head>
 
 <body>
@@ -60,6 +63,14 @@
         </div>
     </div>
     <!--PreLoader Ends-->
+
+    {{#if message}}
+    <div style="position: absolute; z-index: 9999; background-color: #fff; width: 100%; text-align: center;">
+        <div class="alert alert-dismissible fade show" role="alert">
+            <p>{{message}}</p>
+        </div>
+    </div>
+    {{/if}}
 
     <!-- header -->
     <div class="top-header-area" id="sticker">
@@ -257,6 +268,47 @@
     <script src="/assets/js/sticker.js"></script>
     <!-- main js -->
     <script src="/assets/js/main.js"></script>
+    <!-- <script>
+        //keep track of our cookie
+        var cookieRegistry = [];
+
+        function listenCookieChange(cookieName, callback) {
+            setInterval(function () {
+                if (cookieRegistry[cookieName]) {
+                    console.log('1');
+                    if (readCookie(cookieName) != cookieRegistry[cookieName]) {
+                        // update registry so we dont get triggered again
+                        cookieRegistry[cookieName] = readCookie(cookieName);
+                        return callback();
+                    }
+                } else {
+                    console.log('2');
+                    cookieRegistry[cookieName] = readCookie(cookieName);
+                }
+                console.log('listening');
+            }, 5000);
+        }
+
+
+        function readCookie(name) {
+            console.log('reading cookie');
+            var nameEQ = name + "=";
+            var ca = document.cookie.split(';');
+            console.log(document.cookie);
+            for (var i = 0; i < ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+            }
+            console.log('returning null' + nameEQ);
+            return null;
+        }
+
+        listenCookieChange('connect.sid', function () {
+            console.log('cookie changed');
+            location.reload();
+        });
+    </script> -->
 
 </body>
 

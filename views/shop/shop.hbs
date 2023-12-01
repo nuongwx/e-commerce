@@ -1,121 +1,136 @@
-{{!-- <!-- breadcrumb-section -->
-<div class="breadcrumb-section breadcrumb-bg">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-8 offset-lg-2 text-center">
-                <div class="breadcrumb-text">
-                    <p>Fresh and Organic</p>
-                    <h1>Shop</h1>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- end breadcrumb section --> --}}
-
 <!-- products -->
 <div class="product-section mt-150 mb-150">
     <div class="container">
-
         <div class="row">
             <div class="col-md-12">
                 <div class="product-filters">
                     <ul>
-                        <li class="active" data-filter="*">All</li>
-                        <li data-filter=".coffee">Coffees</li>
-                        <li data-filter=".tea">Teas</li>
-                        <li data-filter=".milk">Milks</li>
+                        <form action="/shop" method="GET">
+                            <label for="category">Category</label>
+                            <select name="category_id" id="category" class="form-control"
+                                style="display: inline; width: 100px;">
+                                <option value="all">All</option>
+                                {{#each categories}}
+                                <option value="{{this.id}}">{{this.name}}</option>
+                                {{/each}}
+                            </select>
+                            <label for="min">Price</label>
+                            <input type="number" name="min" id="min" value="0" style="padding: 4px;" onchange="document.getElementById('max').min = this.value;">
+                            <label for="max">to</label>
+                            <input type="number" name="max" id="max" value="1000" style="padding: 4px;" onchange="document.getElementById('min').max = this.value;">
+                            <label for="sort">Sort by</label>
+                            <select name="sort" id="sort" class="form-control" style="display: inline; width: 100px;">
+                                <option value="price">Price</option>
+                                <option value="name">Name</option>
+                            </select>
+                            <label for="order">Order</label>
+                            <select name="order" id="order" class="form-control" style="display: inline; width: 150px;">
+                                <option value="asc">Ascending</option>
+                                <option value="desc">Descending</option>
+                            </select>
+                            <label for="name">Filter</label>
+                            <input type="text" name="name" id="name" placeholder="Search" class="form-control"
+                                style="display: inline; width: 200px;">
+                            <input type="submit" value="Filter" class="btn btn-primary"
+                                style="border-radius: .25rem !important; padding: 5.75px 75px;">
+                            <input type="reset" value="Reset" class="btn btn-danger">
+                        </form>
                     </ul>
                 </div>
             </div>
         </div>
 
-        <div class="row product-lists">
-            {{#each products}}
-                <div class="col-lg-4 col-md-6 text-center {{category}}">
-                    <div class="single-product-item">
-                        <div class="product-image">
-                            <a href="/shop/{{id}}"><img src="{{image}}" alt=""></a>
-                        </div>
-                        <h3>{{name}}</h3>
-                        <!-- <p class="product-price"><span>Per Kg</span> {{price}}$ </p>
-                        <a href="/cart/{{id}}" class="cart-btn"><i class="fas fa-shopping-cart"></i> Add to Cart</a> -->
-                    </div>
-                </div>
-            {{/each}}
+        <script>
+            // fill in the form with the query string
+            var queryString = window.location.search;
+            var urlParams = new URLSearchParams(queryString);
+            var category = urlParams.get('category_id');
+            var min = urlParams.get('min');
+            var max = urlParams.get('max');
+            var sort = urlParams.get('sort');
+            var order = urlParams.get('order');
+            var search = urlParams.get('name');
 
-            <!-- <div class="col-lg-4 col-md-6 text-center coffee">
+            console.log(category);
+            console.log(min);
+            console.log(max);
+            console.log(sort);
+            console.log(order);
+            console.log(search);
+
+            if (category) {
+                document.getElementById('category').value = category;
+            }
+            if (min) {
+                document.getElementById('min').value = min;
+            }
+            if (max) {
+                document.getElementById('max').value = max;
+            }
+            if (sort) {
+                document.getElementById('sort').value = sort;
+            }
+            if (order) {
+                document.getElementById('order').value = order;
+            }
+            if (search) {
+                document.getElementById('name').value = search;
+            }
+        </script>
+
+        <div class="row product-lists">
+            {{#if products.rows.length}}
+            {{#each products.rows}}
+            <div class="col-lg-4 col-md-6 text-center {{category}}">
                 <div class="single-product-item">
                     <div class="product-image">
-                        <a href="/shop/0"><img src="/assets/img/products/product-img-1.jpg" alt=""></a>
+                        <a href="/shop/{{id}}"><img src="{{image}}" alt=""></a>
                     </div>
-                    <h3>Old fashioned</h3>
-                    {{!-- <p class="product-price"><span>Per Kg</span> 85$ </p>
-                    <a href="cart" class="cart-btn"><i class="fas fa-shopping-cart"></i> Add to Cart</a> --}}
+                    <h3>{{name}}</h3>
+                    <p class="product-price"><span></span> {{price}}$ </p>
+                    <!-- <a href="/cart/{{id}}" class="cart-btn"><i class="fas fa-shopping-cart"></i> Add to Cart</a> -->
                 </div>
             </div>
-            <div class="col-lg-4 col-md-6 text-center tea">
-                <div class="single-product-item">
-                    <div class="product-image">
-                        <a href="/shop/0"><img src="/assets/img/products/product-img-2.jpg" alt=""></a>
-                    </div>
-                    <h3>Water with a kind of herb boyled in it</h3>
-                    {{!-- <p class="product-price"><span>Per Kg</span> 70$ </p>
-                    <a href="cart" class="cart-btn"><i class="fas fa-shopping-cart"></i> Add to Cart</a> --}}
-                </div>
+            {{/each}}
+            {{else}}
+            <div class="col-lg-12 text-center">
+                <h1>No products found</h1>
             </div>
-            <div class="col-lg-4 col-md-6 text-center milk">
-                <div class="single-product-item">
-                    <div class="product-image">
-                        <a href="/shop/0"><img src="/assets/img/products/product-img-3.jpg" alt=""></a>
-                    </div>
-                    <h3>Christmas' morning</h3>
-                    {{!-- <p class="product-price"><span>Per Kg</span> 35$ </p>
-                    <a href="cart" class="cart-btn"><i class="fas fa-shopping-cart"></i> Add to Cart</a> --}}
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6 text-center coffee">
-                <div class="single-product-item">
-                    <div class="product-image">
-                        <a href="/shop/0"><img src="/assets/img/products/product-img-4.jpg" alt=""></a>
-                    </div>
-                    <h3>Hydraulic cafetière cafe</h3>
-                    {{!-- <p class="product-price"><span>Per Kg</span> 50$ </p>
-                    <a href="cart" class="cart-btn"><i class="fas fa-shopping-cart"></i> Add to Cart</a> --}}
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6 text-center milk">
-                <div class="single-product-item">
-                    <div class="product-image">
-                        <a href="/shop/0"><img src="/assets/img/products/product-img-5.jpg" alt=""></a>
-                    </div>
-                    <h3>To: Father Christmas, and the cats</h3>
-                    {{!-- <p class="product-price"><span>Per Kg</span> 45$ </p>
-                    <a href="cart" class="cart-btn"><i class="fas fa-shopping-cart"></i> Add to Cart</a> --}}
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6 text-center coffee">
-                <div class="single-product-item">
-                    <div class="product-image">
-                        <a href="/shop/0"><img src="/assets/img/products/product-img-6.jpg" alt=""></a>
-                    </div>
-                    <h3>The Italian</h3>
-                    {{!-- <p class="product-price"><span>Per Kg</span> 80$ </p>
-                    <a href="cart" class="cart-btn"><i class="fas fa-shopping-cart"></i> Add to Cart</a> --}}
-                </div>
-            </div> -->
+            {{/if}}
         </div>
 
         <div class="row">
             <div class="col-lg-12 text-center">
                 <div class="pagination-wrap">
                     <ul>
-                        <li><a href="#">Prev</a></li>
-                        <li><a href="#">1</a></li>
-                        <li><a class="active" href="#">2</a></li>
-                        <li><a href="#">3</a></li>
-                        <li><a href="#">Next</a></li>
+                        <h1>{{products.count}}</h1>
+                        <script>
+                            // pagination
+                            var queryString = window.location.search;
+                            var urlParams = new URLSearchParams(queryString);
+                            var count = {{ products.count }};
+                            var limit = 3;
+                            var pages = Math.ceil(count / limit);
+                            var page = urlParams.get('page');
+                            if (!page) {
+                                urlParams.set('page', 1);
+                                page = 1;
+                            }
+                            urlParams.delete('page');
+                            var pagination = '';
+                            var res = urlParams.toString();
+                            for (var i = 1; i <= pages; i++) {
+                                if (i == page) {
+                                    pagination += '<li><a href="/shop?' + res + '" class="active">' + i + '</a></li>';
+                                } else {
+                                    pagination += '<li><a href="/shop?' + res + '&page=' + i + '">' + i + '</a></li>';
+                                }
+                            }
+                            document.write(pagination);
+                        </script>
+
                     </ul>
+
                 </div>
             </div>
         </div>

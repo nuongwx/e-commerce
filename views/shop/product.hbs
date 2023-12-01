@@ -10,12 +10,7 @@
             <div class="col-md-7">
                 <div class="single-product-content">
                     <h3>{{product.name}}</h3>
-                    {{!-- <p class="single-product-pricing"><span>Per Kg</span> $50</p> --}}
                     <p class="single-product-pricing">{{product.price}}</p>
-                    {{!-- <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dicta sint dignissimos, rem
-                        commodi cum
-                        voluptatem quae reprehenderit repudiandae ea tempora incidunt ipsa, quisquam animi perferendis
-                        eos eum modi! Tempora, earum.</p> --}}
                     <div class="single-product-form">
                         <form action="/index">
                             <input type="number" placeholder="0">
@@ -23,13 +18,6 @@
                         <a href="/cart" class="cart-btn"><i class="fas fa-shopping-cart"></i> Add to Cart</a>
                         <p><strong>Categories: </strong>{{product.category}}</p>
                     </div>
-                    {{!-- <h4>Share:</h4>
-                    <ul class="product-share">
-                        <li><a href=""><i class="fab fa-facebook-f"></i></a></li>
-                        <li><a href=""><i class="fab fa-twitter"></i></a></li>
-                        <li><a href=""><i class="fab fa-google-plus-g"></i></a></li>
-                        <li><a href=""><i class="fab fa-linkedin"></i></a></li>
-                    </ul> --}}
                 </div>
             </div>
         </div>
@@ -44,53 +32,111 @@
             </div>
         </div>
         <!-- end single product -->
-        <!-- more products -->
-        <div class="more-products mb-150 mt-150">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-8 offset-lg-2 text-center">
-                        <div class="section-title">
-                            <h3><span class="orange-text">Related</span> Products</h3>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid, fuga quas itaque
-                                eveniet
-                                beatae optio.</p>
+        <!-- start reviews -->
+        <div class="row mt-100">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 product_content_bottom">
+                <hr class="hidden-lg">
+                <div>
+                    <h4 class="related_product_title">Reviews</h4>
+                    {{#if reviews.length}}
+                    {{#each reviews}}
+                    <div class="review">
+                        <div>
+                            <span class="stars-container stars-{{this.rating}}">★★★★★</span>
                         </div>
+                        <p>{{this.User.email}}: {{this.comment}} at {{this.createdAt}}</p>
                     </div>
+                    {{/each}}
+                    {{else}}
+                    <p>No reviews yet</p>
+                    {{/if}}
                 </div>
-                <div class="row">
-                    <div class="col-lg-4 col-md-6 text-center">
-                        <div class="single-product-item">
-                            <div class="product-image">
-                                <a href="/shop/0"><img src="/assets/img/products/product-img-1.jpg" alt=""></a>
+                <div class="review-form mt-100 mb-50">
+                    <h4>Leave a Review</h4>
+                    {{#if user}}
+
+                    <form action="/shop/{{product.id}}/review" method="POST">
+                        <div class="rating">
+                            <label>
+                                <input type="radio" name="rating" value="1" />
+                                <span class="icon">★</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="rating" value="2" />
+                                <span class="icon">★★</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="rating" value="3" />
+                                <span class="icon">★★★</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="rating" value="4" />
+                                <span class="icon">★★★★</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="rating" value="5" required checked />
+                                <span class="icon">★★★★★</span>
+                            </label>
+                        </div>
+                        <div
+                            style="display: flex; align-items: center; justify-content: space-between; width: 100%; margin-bottom: 10px;">
+                            <input type="text" name="comment" id="comment" class="form-control" placeholder="Comment"
+                                required>
+                            <input type="submit" value="Submit"
+                                style="border-radius: .25rem !important; padding: 5.75px 75px; margin-left: 10px;">
+                        </div>
+                    </form>
+
+                    {{else}}
+                    <div>
+                    <p><br>Please <a href="/auth/login" target="_blank">login</a> to leave a
+                        review</p>
+                        </div>
+                    {{/if}}
+                </div>
+                <hr>
+            </div>
+            <!-- more products -->
+            <div class="more-products mb-150 mt-150">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-8 offset-lg-2 text-center">
+                            <div class="section-title">
+                                <h3><span class="orange-text">Related</span> Products</h3>
+                                <p>Based on matching categories, if any, and an abritrary product from different
+                                    category</p>
                             </div>
-                            <h3>A drink</h3>
-                            {{!-- <p class="product-price"><span>Per Kg</span> 85$ </p>
-                            <a href="/cart" class="cart-btn"><i class="fas fa-shopping-cart"></i> Add to Cart</a> --}}
                         </div>
                     </div>
-                    <div class="col-lg-4 col-md-6 text-center">
-                        <div class="single-product-item">
-                            <div class="product-image">
-                                <a href="/shop/0"><img src="/assets/img/products/product-img-2.jpg" alt=""></a>
+                    <div class="row">
+                        <!-- <div class="col-lg-4 col-md-6 text-center">
+                            <div class="single-product-item">
+                                <div class="product-image">
+                                    <a href="/shop/0"><img src="/assets/img/products/product-img-1.jpg" alt=""></a>
+                                </div>
+                                <h3>A drink</h3>
+                                {{!-- <p class="product-price"><span>Per Kg</span> 85$ </p>
+                                <a href="/cart" class="cart-btn"><i class="fas fa-shopping-cart"></i> Add to Cart</a>
+                                --}}
                             </div>
-                            <h3>Drink 2</h3>
-                            {{!-- <p class="product-price"><span>Per Kg</span> 70$ </p>
-                            <a href="cart" class="cart-btn"><i class="fas fa-shopping-cart"></i> Add to Cart</a> --}}
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-6 offset-lg-0 offset-md-3 text-center">
-                        <div class="single-product-item">
-                            <div class="product-image">
-                                <a href="/shop/0"><img src="/assets/img/products/product-img-3.jpg" alt=""></a>
+                        </div> -->
+                        {{#each related_products}}
+                        <div class="col-lg-4 col-md-6 text-center">
+                            <div class="single-product-item">
+                                <div class="product-image">
+                                    <a href="/shop/{{this.id}}"><img src="{{this.image}}" alt=""></a>
+                                </div>
+                                <h3>{{this.name}}</h3>
+                                <!-- <p class="product-price"><span>Per Kg</span> {{this.price}} </p>
+                                <a href="/cart" class="cart-btn"><i class="fas fa-shopping-cart"></i> Add to Cart</a> -->
                             </div>
-                            <h3>Also a drink</h3>
-                            {{!-- <p class="product-price"><span>Per Kg</span> 35$ </p>
-                            <a href="cart" class="cart-btn"><i class="fas fa-shopping-cart"></i> Add to Cart</a> --}}
                         </div>
+                        {{/each}}
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
 <!-- end more products -->

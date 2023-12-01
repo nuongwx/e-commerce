@@ -1,3 +1,4 @@
+const dotenv = require('dotenv').config();
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -5,6 +6,9 @@ var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var passport = require('passport');
 var logger = require('morgan');
+var flash = require('connect-flash');
+
+
 
 var db = require("./models/index.js");
 
@@ -48,6 +52,22 @@ app.use(session({
 
 app.use(passport.authenticate('session'));
 
+app.use(function (req, res, next) {
+    res.locals.session = req.session;
+    res.locals.user = req.user;
+    res.locals.message = req.session.messages;
+    next();
+});
+
+app.use(flash());
+
+// app.use(function (req, res, next) {
+//     res.locals.message = req.flash('message');
+//     next();
+// });
+
+app.use('/auth', authRouter);
+
 app.use('/', homeRouter);
 
 app.use('/shop', shopRouter);
@@ -55,8 +75,6 @@ app.use('/shop', shopRouter);
 app.use('/cart', cartRouter);
 
 app.use('/checkout', checkoutRouter);
-
-app.use('/auth', authRouter);
 
 app.use('/user', profileRouter);
 

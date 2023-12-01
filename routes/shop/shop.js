@@ -6,4 +6,6 @@ var controller = require('./controller.js');
 router.get('/', controller.showList);
 
 router.get('/:id', controller.showProduct);
+
+router.post('/:id/review', controller.addReview);
 module.exports = router;
