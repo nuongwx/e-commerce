@@ -42,6 +42,7 @@ if (process.env.NODE_ENV === 'development') {
             id: 1,
             email: 'ngwx@ngwx.co',
             password: '1',
+            role: 1,
         });
         db.User.create({
             id: 2,

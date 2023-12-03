@@ -11,10 +11,11 @@ router.get('/login', authController.getLogin);
 // router.post('/login', authController.postLogin);
 
 router.post('/login', passport.authenticate('local', {
-    successRedirect: '/user/profile',
+    successRedirect: '/',
     failureRedirect: '/auth/login',
     failureMessage: 'Invalid email or password',
 }));
+    
 
 router.get('/logout', authController.logout);
 

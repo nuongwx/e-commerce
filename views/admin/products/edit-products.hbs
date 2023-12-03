@@ -1,0 +1,56 @@
+<!-- Blank Start -->
+<div class="container-fluid pt-4 px-4">
+    <div class="row bg-secondary justify-content-center rounded pt-5">
+        <div class="col-md-3 text-center pt-5">
+            <img src="{{product.image}}" alt="blank" class="img-fluid">
+            <div class="mb-3">
+                <label for="formFileSm" class="form-label">Product image</label>
+                <input class="form-control form-control-sm bg-dark" id="formFileSm" type="file">
+            </div>
+        </div>
+        <div class="col-sm-12 col-xl-6">
+            <div class="bg-secondary rounded h-100 p-4">
+                <h6 class="mb-4">Edit product</h6>
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="floatingInput" value="{{product.name}}">
+                    <label for="floatingInput">Product Name</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="number" class="form-control" id="floatingPassword" value="{{product.price}}">
+                    <label for="floatingPassword">Price</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <select class="form-select" id="floatingSelect" aria-label="Category">
+                        <!-- <option selected="">Coffee</option>
+                        <option value="">Tea</option>
+                        <option value="">Milk</option>
+                        <option value="">Not a drink</option> -->
+                        {{#each categories}}
+                        <option value="{{this.id}}">{{this.name}}</option>
+                        {{/each}}
+                    </select>
+                    <label for="floatingSelect">Category</label>
+                </div>
+                <div class="form-floating">
+                    <textarea class="form-control" placeholder="Description" id="floatingTextarea"
+                        style="height: 150px;">{{product.description}}</textarea>
+                    <label for="floatingTextarea">Description</label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col text-end">
+            <form action="/products">
+                <button type="submit" class="btn btn-primary mt-3">Save</button>
+                <button type="button" onclick="history.back()" class="btn btn-danger mt-3">Cancel</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    const select = document.getElementById('floatingSelect');
+    select.value = "{{product.category_id}}";
+</script>
+<!-- Blank End -->

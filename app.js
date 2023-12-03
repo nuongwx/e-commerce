@@ -22,6 +22,8 @@ var checkoutRouter = require('./routes/checkout/checkout');
 var authRouter = require('./routes/auth/router');
 var profileRouter = require('./routes/user/profile');
 
+const adminRouter = require('./routes/admin/index');
+
 
 
 
@@ -56,6 +58,7 @@ app.use(function (req, res, next) {
     res.locals.session = req.session;
     res.locals.user = req.user;
     res.locals.message = req.session.messages;
+
     next();
 });
 
@@ -66,7 +69,10 @@ app.use(flash());
 //     next();
 // });
 
-app.use('/auth', authRouter);
+app.use('/auth', function (req, res, next) {
+    res.locals.layout = 'auth/layout';
+    next();
+}, authRouter);
 
 app.use('/', homeRouter);
 
@@ -77,6 +83,12 @@ app.use('/cart', cartRouter);
 app.use('/checkout', checkoutRouter);
 
 app.use('/user', profileRouter);
+
+// admin route use different layout
+app.use('/admin', function (req, res, next) {
+    res.locals.layout = 'admin/layout';
+    next();
+}, adminRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

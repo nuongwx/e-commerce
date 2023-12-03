@@ -31,6 +31,10 @@ module.exports = (sequelize, DataTypes) => {
         name: {
             type: DataTypes.TEXT
         },
+        role: {
+            type: DataTypes.INTEGER,
+            defaultValue: 0
+        },
     }, {
         sequelize,
         timestamps: true
