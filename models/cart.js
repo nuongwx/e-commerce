@@ -6,6 +6,12 @@ module.exports = (sequelize, DataTypes) => {
             Cart.belongsTo(models.User, {
                 foreignKey: "user_id",
             });
+            Cart.belongsTo(models.Session, {
+                foreignKey: "session_id",
+            });
+            Cart.hasMany(models.CartItem, {
+                foreignKey: "cart_id",
+            });
         }
     };
     Cart.init({
@@ -14,18 +20,32 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             autoIncrement: true
         },
-        items: {
-            type: DataTypes.ARRAY(DataTypes.INTEGER),
-            allowNull: false,
-        },
+        // items: {
+        //     type: DataTypes.ARRAY(DataTypes.INTEGER),
+        //     // allowNull: false,
+        // },
         user_id: {
             type: DataTypes.INTEGER,
-            allowNull: false,
+            // allowNull: true,
         },
-        quantity: {
-            type: DataTypes.ARRAY(DataTypes.INTEGER),
-            allowNull: false,
+        session_id: {
+            type: DataTypes.STRING,
+            // allowNull: true,
         },
+        total: {
+            type: DataTypes.VIRTUAL,
+            get() {
+                let total = 0;
+                this.CartItems.forEach(item => {
+                    total += item.Product.price * item.quantity;
+                });
+                return total;
+            }
+        },
+        // quantity: {
+        //     type: DataTypes.ARRAY(DataTypes.INTEGER),
+        //     // allowNull: true,
+        // },
     }, {
         sequelize,
         timestamps: true

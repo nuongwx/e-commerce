@@ -5,7 +5,7 @@
             <div class="col-md-12">
                 <div class="product-filters">
                     <ul>
-                        <form action="/shop" method="GET">
+                        <form onsubmit="getSearchResults(); return false;">
                             <label for="category">Category</label>
                             <select name="category_id" id="category" class="form-control"
                                 style="display: inline; width: 100px;">
@@ -15,9 +15,11 @@
                                 {{/each}}
                             </select>
                             <label for="min">Price</label>
-                            <input type="number" name="min" id="min" value="0" style="padding: 4px;" onchange="document.getElementById('max').min = this.value;">
+                            <input type="number" name="min" id="min" value="0" style="padding: 4px;"
+                                onchange="document.getElementById('max').min = this.value;">
                             <label for="max">to</label>
-                            <input type="number" name="max" id="max" value="1000" style="padding: 4px;" onchange="document.getElementById('min').max = this.value;">
+                            <input type="number" name="max" id="max" value="1000" style="padding: 4px;"
+                                onchange="document.getElementById('min').max = this.value;">
                             <label for="sort">Sort by</label>
                             <select name="sort" id="sort" class="form-control" style="display: inline; width: 100px;">
                                 <option value="price">Price</option>
@@ -31,17 +33,19 @@
                             <label for="name">Filter</label>
                             <input type="text" name="name" id="name" placeholder="Search" class="form-control"
                                 style="display: inline; width: 200px;">
-                            <input type="submit" value="Filter" class="btn btn-primary"
+                            <input type="submit" value="Filter" class="btn btn-primary submit"
                                 style="border-radius: .25rem !important; padding: 5.75px 75px;">
-                            <input type="reset" value="Reset" class="btn btn-danger">
+                            <input type="reset" value="Reset" onclick=getSearchResults() class="btn btn-danger">
                         </form>
+
                     </ul>
                 </div>
             </div>
         </div>
 
         <script>
-            // fill in the form with the query string
+            {/*
+                // fill in the form with the query string
             var queryString = window.location.search;
             var urlParams = new URLSearchParams(queryString);
             var category = urlParams.get('category_id');
@@ -75,13 +79,13 @@
             }
             if (search) {
                 document.getElementById('name').value = search;
-            }
+            }*/}
         </script>
 
         <div class="row product-lists">
             {{#if products.rows.length}}
             {{#each products.rows}}
-            <div class="col-lg-4 col-md-6 text-center {{category}}">
+            {{!-- <div class="col-lg-4 col-md-6 text-center {{category}}">
                 <div class="single-product-item">
                     <div class="product-image">
                         <a href="/shop/{{id}}"><img src="{{image}}" alt=""></a>
@@ -90,7 +94,8 @@
                     <p class="product-price"><span></span> {{price}}$ </p>
                     <!-- <a href="/cart/{{id}}" class="cart-btn"><i class="fas fa-shopping-cart"></i> Add to Cart</a> -->
                 </div>
-            </div>
+            </div> --}}
+            {{> product}}
             {{/each}}
             {{else}}
             <div class="col-lg-12 text-center">
@@ -105,28 +110,9 @@
                     <ul>
                         <h1>{{products.count}}</h1>
                         <script>
-                            // pagination
-                            var queryString = window.location.search;
-                            var urlParams = new URLSearchParams(queryString);
-                            var count = {{ products.count }};
-                            var limit = 3;
-                            var pages = Math.ceil(count / limit);
-                            var page = urlParams.get('page');
-                            if (!page) {
-                                urlParams.set('page', 1);
-                                page = 1;
-                            }
-                            urlParams.delete('page');
-                            var pagination = '';
-                            var res = urlParams.toString();
-                            for (var i = 1; i <= pages; i++) {
-                                if (i == page) {
-                                    pagination += '<li><a href="/shop?' + res + '" class="active">' + i + '</a></li>';
-                                } else {
-                                    pagination += '<li><a href="/shop?' + res + '&page=' + i + '">' + i + '</a></li>';
-                                }
-                            }
-                            document.write(pagination);
+                            document.addEventListener("DOMContentLoaded", function () {
+                                getSearchResults();
+                            });
                         </script>
 
                     </ul>

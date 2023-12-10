@@ -23,6 +23,8 @@ db.Category = require("./category.js")(sequelize, Sequelize);
 db.Product = require("./product.js")(sequelize, Sequelize);
 db.Review = require("./review.js")(sequelize, Sequelize);
 db.Cart = require("./cart.js")(sequelize, Sequelize);
+db.CartItem = require("./cart-item.js")(sequelize, Sequelize);
+db.Session = require("./session.js")(sequelize, Sequelize);
 
 Object.keys(db).forEach(modelName => {
     if (db[modelName].associate) {
@@ -198,11 +200,6 @@ if (process.env.NODE_ENV === 'development') {
             product_id: 2,
             rating: 2,
             comment: 'comment8'
-        });
-        db.Cart.create({
-            items: [1, 2],
-            quantity: [1, 2],
-            user_id: 1
         });
     });
 } else {

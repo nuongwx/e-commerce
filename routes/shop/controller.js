@@ -1,6 +1,11 @@
 const db = require("../../models/index.js");
 
 exports.showList = async (req, res, next) => {
+    let categories = await db.Category.findAll();
+    let products = await db.Product.findAndCountAll({ limit: 3 });
+    return res.render('shop/shop', { categories: categories });
+}
+exports.queryList = async (req, res, next) => {
     let query = {};
     for (let key in req.query) {
         if (req.query[key]) {
@@ -51,12 +56,11 @@ exports.showList = async (req, res, next) => {
         }
     }
 
-    let products = await db.Product.findAndCountAll({ where: query, order: order, limit: 3, offset: offset });
+    let products = await db.Product.findAndCountAll({ where: query, order: order, offset: offset });
     // let categories = await db.Product.findAll({ attributes: ['category'], group: ['category'] });
     let categories = await db.Category.findAll();
-    return res.render('shop/shop', { products: products, categories: categories });
-
-
+    return res.json({ products: products, categories: categories });
+    // return res.render('shop/shop', { products: products, categories: categories });
 }
 
 exports.showProduct = async (req, res, next) => {
@@ -78,7 +82,7 @@ exports.showProduct = async (req, res, next) => {
         return products;
     });
 
-    return res.render('shop/product', { product: product, reviews: reviews, related_products: relatedProducts});
+    return res.render('shop/product', { product: product, reviews: reviews, related_products: relatedProducts });
 }
 
 exports.addReview = async (req, res, next) => {
@@ -90,6 +94,24 @@ exports.addReview = async (req, res, next) => {
     let rating = req.body.rating;
     let comment = req.body.comment;
     let review = await db.Review.create({ user_id: user_id, product_id: product_id, rating: rating, comment: comment });
+    review = await db.Review.findOne({ where: { id: review.id }, include: { model: db.User } });
+    return res.json(review);
 
-    return res.redirect('/shop/' + product_id);
+    // return res.redirect('/shop/' + product_id);
+}
+
+exports.showReview = async (req, res, next) => {
+    if (!req.params.id) {
+        return res.redirect('/shop');
+    }
+    let id = req.params.id;
+    let product = await db.Product.findOne({ where: { id: id } });
+    if (!product) {
+        return res.redirect('/shop');
+    }
+    let page = req.query.page || 1;
+    let offset = (page - 1) * 3;
+    let reviews = await db.Review.findAll({ where: { product_id: id }, include: { model: db.User }, offset: offset, limit: 3, order: [['id', 'DESC']] });
+
+    return res.send(reviews);
 }

@@ -8,6 +8,8 @@ var passport = require('passport');
 var logger = require('morgan');
 var flash = require('connect-flash');
 
+const { create } = require('express-handlebars');
+const { allowInsecurePrototypeAccess } = require('@handlebars/allow-prototype-access');
 
 
 var db = require("./models/index.js");
@@ -29,15 +31,60 @@ const adminRouter = require('./routes/admin/index');
 
 var app = express();
 
+const hbs = create({
+    extname: '.hbs',
+    defaultLayout: 'layout',
+    layoutsDir: path.join(__dirname, 'views'),
+    // partialsDir: path.join(__dirname, 'views/user/partials'),
+    helpers: {
+        test: function () {
+            return 'test';
+        }
+    },
+    handlebars: allowInsecurePrototypeAccess(require('handlebars'))
+});
+
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
+app.engine('hbs', hbs.engine);
 app.set('view engine', 'hbs');
+app.set('views', path.join(__dirname, 'views'));
 
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+function exposeTemplates (req, res, next) {
+	// Uses the `ExpressHandlebars` instance to get the get the **precompiled**
+	// templates which will be shared with the client-side of the app.
+	hbs.getTemplates("views/partials/", {
+		// cache: app.enabled("view cache"),
+		precompiled: true,
+	}).then((templates) => {
+		// RegExp to remove the ".handlebars" extension from the template names.
+		const extRegex = new RegExp(hbs.extname + "$");
+
+		// Creates an array of templates which are exposed via
+		// `res.locals.templates`.
+		templates = Object.keys(templates).map((name) => {
+			return {
+				name: name.replace(extRegex, ""),
+				template: templates[name],
+			};
+		});
+
+		// Exposes the templates during view rendering.
+		if (templates.length) {
+			res.locals.templates = templates;
+		}
+
+		setImmediate(next);
+	})
+		.catch(next);
+}
+
+app.use(exposeTemplates);
 
 
 app.use(session({
@@ -53,6 +100,17 @@ app.use(session({
 }));
 
 app.use(passport.authenticate('session'));
+
+// generate session for every session, doesn't matter if user is logged in or not
+app.use(function (req, res, next) {
+    if (!req.session.cart) {
+        req.session.cart = {};
+        req.session.cart.items = [];
+        req.session.cart.totalQty = 0;
+        req.session.cart.totalPrice = 0;
+    }
+    next();
+});
 
 app.use(function (req, res, next) {
     res.locals.session = req.session;

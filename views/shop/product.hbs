@@ -13,9 +13,11 @@
                     <p class="single-product-pricing">{{product.price}}</p>
                     <div class="single-product-form">
                         <form action="/index">
-                            <input type="number" placeholder="0">
+                            <input type="number" id="quantity" value="1" required>
                         </form>
-                        <a href="/cart" class="cart-btn"><i class="fas fa-shopping-cart"></i> Add to Cart</a>
+                        {{!-- <a href="/cart" class="cart-btn"><i class="fas fa-shopping-cart"></i> Add to Cart</a> --}}
+                        <button type="button" onclick="addToCart({{product.id}})" class="cart-btn"><i
+                                class="fas fa-shopping-cart"></i> Add to Cart</button>
                         <p><strong>Categories: </strong>{{product.category}}</p>
                     </div>
                 </div>
@@ -36,26 +38,30 @@
         <div class="row mt-100">
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 product_content_bottom">
                 <hr class="hidden-lg">
-                <div>
-                    <h4 class="related_product_title">Reviews</h4>
+                <h4 class="related_product_title">Reviews</h4>
+                <div id="reviews">
                     {{#if reviews.length}}
-                    {{#each reviews}}
-                    <div class="review">
-                        <div>
-                            <span class="stars-container stars-{{this.rating}}">★★★★★</span>
-                        </div>
-                        <p>{{this.User.email}}: {{this.comment}} at {{this.createdAt}}</p>
-                    </div>
-                    {{/each}}
+                    {{!-- {{#each reviews}}
+                    {{> review}}
+                    {{/each}} --}}
                     {{else}}
                     <p>No reviews yet</p>
                     {{/if}}
                 </div>
+                <div>
+                    <button type="button" onclick=loadMoreReviews({{product.id}}) class="btn btn-primary"
+                        id="more-reviews-btn" rel="1">Load more reviews</button>
+                </div>
+                <script>
+                    document.addEventListener("DOMContentLoaded", function (event) {
+                        loadMoreReviews({{ product.id }});
+                    });
+                </script>
                 <div class="review-form mt-100 mb-50">
                     <h4>Leave a Review</h4>
                     {{#if user}}
 
-                    <form action="/shop/{{product.id}}/review" method="POST">
+                    <form onsubmit="pessimisticReview({{product.id}});return false;" method="POST">
                         <div class="rating">
                             <label>
                                 <input type="radio" name="rating" value="1" />
@@ -89,9 +95,9 @@
 
                     {{else}}
                     <div>
-                    <p><br>Please <a href="/auth/login" target="_blank">login</a> to leave a
-                        review</p>
-                        </div>
+                        <p><br>Please <a href="/auth/login" target="_blank">login</a> to leave a
+                            review</p>
+                    </div>
                     {{/if}}
                 </div>
                 <hr>

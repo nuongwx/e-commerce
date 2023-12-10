@@ -17,6 +17,7 @@
                             </tr>
                         </thead>
                         <tbody>
+                            <!--
                             <tr class="table-body-row">
                                 <td class="product-remove"><a href="#"><i class="far fa-window-close"></i></a></td>
                                 <td class="product-image"><img src="/assets/img/products/product-img-1.jpg" alt=""></td>
@@ -32,17 +33,96 @@
                                 <td class="product-price">$0.7</td>
                                 <td class="product-quantity"><input type="number" placeholder="0"></td>
                                 <td class="product-total">1</td>
-                            </tr>
-                            {{!-- <tr class="table-body-row">
-                                <td class="product-remove"><a href="#"><i class="far fa-window-close"></i></a></td>
-                                <td class="product-image"><img src="assets/img/products/product-img-3.jpg" alt=""></td>
-                                <td class="product-name">Lemon</td>
-                                <td class="product-price">$35</td>
-                                <td class="product-quantity"><input type="number" placeholder="0"></td>
-                                <td class="product-total">1</td>
-                            </tr> --}}
+                            </tr> -->
                         </tbody>
                     </table>
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function () {
+                            // read from /cart/show and update the cart table
+                            $.ajax({
+                                url: "/cart/show",
+                                type: "GET",
+                                dataType: "json",
+                                success: function (data) {
+                                    console.log(data);
+                                    var cart = data.CartItems;
+                                    var cartTable = $('.cart-table tbody');
+                                    cartTable.empty();
+                                    for (var i = 0; i < cart.length; i++) {
+                                        var row = $('<tr class="table-body-row"></tr>');
+                                        var remove = $('<td class="product-remove"><a href="#"><i class="far fa-window-close"></i></a></td>');
+                                        var id = $('<td style="display:none;" class="product-id">' + cart[i].Product.id + '</td>');
+                                        var image = $('<td class="product-image"><img src=" ' + cart[i].Product.image + ' " alt=""></td>');
+                                        var name = $('<td class="product-name">' + cart[i].Product.name + '</td>');
+                                        var price = $('<td class="product-price">' + cart[i].Product.price + '</td>');
+                                        var quantity = $('<td class="product-quantity"><input type="number" value="' + cart[i].quantity + '" min="1"></td>');
+                                        var total = $('<td class="product-total">' + cart[i].quantity * cart[i].Product.price + '</td>');
+                                        row.append(remove);
+                                        row.append(id);
+                                        row.append(image);
+                                        row.append(name);
+                                        row.append(price);
+                                        row.append(quantity);
+                                        row.append(total);
+                                        cartTable.append(row);
+                                    }
+                                    $('.total-data td:last-child').text(data.total);
+                                    $('.product-quantity input').change(function () {
+                                        var price = $(this).parent().prev().text();
+                                        var quantity = $(this).val();
+                                        var total = price * quantity;
+                                        $(this).parent().next().text(total);
+                                        // make ajax call to update the cart
+                                        var productId = $(this).parent().prev().prev().prev().prev().text();
+                                        console.log(productId);
+                                        $.ajax({
+                                            url: "/cart/update",
+                                            type: "POST",
+                                            data: {
+                                                productId: productId,
+                                                quantity: quantity
+                                            },
+                                            dataType: "json",
+                                            success: function (data) {
+                                                console.log(data);
+                                                $('.total-data td:last-child').text(data.total);
+                                            },
+                                            error: function (error) {
+                                                console.log(error);
+                                            }
+                                        });
+                                    });
+                                    $('.product-remove a').click(function () {
+                                        var productId = $(this).parent().next().text();
+                                        console.log(productId);
+                                        $.ajax({
+                                            url: "/cart/update",
+                                            type: "POST",
+                                            data: {
+                                                productId: productId,
+                                                quantity: "0"
+                                            },
+                                            dataType: "json",
+                                            success: function (data) {
+                                                console.log("this is the data");
+                                                console.log(data);
+                                                // update total
+                                                $('.total-data td:last-child').text(data.total);
+
+                                            },
+                                            error: function (error) {
+                                                console.log(error);
+                                            }
+                                        });
+                                        $(this).parent().parent().remove();
+                                    });
+                                },
+                                error: function (error) {
+                                    console.log(error);
+                                }
+                            });
+                        });
+                    </script>
                 </div>
             </div>
 
@@ -56,14 +136,6 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr class="total-data">
-                                <td><strong>Subtotal: </strong></td>
-                                <td>$1</td>
-                            </tr>
-                            <tr class="total-data">
-                                <td><strong>Shipping: </strong></td>
-                                <td>$499</td>
-                            </tr>
                             <tr class="total-data">
                                 <td><strong>Total: </strong></td>
                                 <td>$545</td>
