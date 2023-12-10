@@ -3,9 +3,9 @@ const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
     class Session extends Model {
         static associate(models) {
-            Session.hasMany(models.Cart, {
-                foreignKey: "session_id",
-            });
+            // Session.hasMany(models.Cart, {
+            //     foreignKey: "session_id",
+            // });
         }
     };
     Session.init({

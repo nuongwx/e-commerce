@@ -6,9 +6,9 @@ module.exports = (sequelize, DataTypes) => {
             Cart.belongsTo(models.User, {
                 foreignKey: "user_id",
             });
-            Cart.belongsTo(models.Session, {
-                foreignKey: "session_id",
-            });
+            // Cart.belongsTo(models.Session, {
+            //     foreignKey: "session_id",
+            // });
             Cart.hasMany(models.CartItem, {
                 foreignKey: "cart_id",
             });
