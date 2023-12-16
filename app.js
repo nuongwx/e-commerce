@@ -7,6 +7,7 @@ var session = require('express-session');
 var passport = require('passport');
 var logger = require('morgan');
 var flash = require('connect-flash');
+const upload = require('express-fileupload');
 
 const { create } = require('express-handlebars');
 const { allowInsecurePrototypeAccess } = require('@handlebars/allow-prototype-access');
@@ -20,6 +21,7 @@ var SequelizeStore = require('connect-session-sequelize')(session.Store);
 var homeRouter = require('./routes/home/index');
 var cartRouter = require('./routes/cart/cart');
 var shopRouter = require('./routes/shop/shop');
+const productRouter = require('./routes/product/index');
 var checkoutRouter = require('./routes/checkout/checkout');
 var authRouter = require('./routes/auth/router');
 var profileRouter = require('./routes/user/profile');
@@ -102,15 +104,15 @@ app.use(session({
 app.use(passport.authenticate('session'));
 
 // generate session for every session, doesn't matter if user is logged in or not
-app.use(function (req, res, next) {
-    if (!req.session.cart) {
-        req.session.cart = {};
-        req.session.cart.items = [];
-        req.session.cart.totalQty = 0;
-        req.session.cart.totalPrice = 0;
-    }
-    next();
-});
+// app.use(function (req, res, next) {
+//     if (!req.session.cart) {
+//         req.session.cart = {};
+//         req.session.cart.items = [];
+//         req.session.cart.totalQty = 0;
+//         req.session.cart.totalPrice = 0;
+//     }
+//     next();
+// });
 
 app.use(function (req, res, next) {
     res.locals.session = req.session;
@@ -121,6 +123,7 @@ app.use(function (req, res, next) {
 });
 
 app.use(flash());
+app.use(upload());
 
 // app.use(function (req, res, next) {
 //     res.locals.message = req.flash('message');
@@ -135,6 +138,8 @@ app.use('/auth', function (req, res, next) {
 app.use('/', homeRouter);
 
 app.use('/shop', shopRouter);
+
+app.use('/product', productRouter);
 
 app.use('/cart', cartRouter);
 

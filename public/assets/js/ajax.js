@@ -2,7 +2,7 @@
 function loadMoreReviews(id) {
     $.ajax({
         // url: '/shop/' + id + '/review?page=' + page,
-        url: '/shop/' + id + '/review?page=' + document.getElementById('more-reviews-btn').getAttribute('rel'),
+        url: '/product/' + id + '/reviews?page=' + document.getElementById('more-reviews-btn').getAttribute('rel'),
         type: 'GET',
         success: function (data) {
             if (data.length < 3) {
@@ -62,7 +62,7 @@ function getSearchResults() {
 
 function pessimisticReview(id) {
     $.ajax({
-        url: '/shop/' + id + '/review',
+        url: '/product/' + id + '/reviews',
         type: 'POST',
         data: {
             rating: document.querySelector('input[name="rating"]:checked').value,

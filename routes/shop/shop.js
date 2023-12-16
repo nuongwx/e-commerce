@@ -7,11 +7,11 @@ router.get('/', controller.showList);
 
 router.get('/query', controller.queryList);
 
-router.get('/:id', controller.showProduct);
+// router.get('/:id', controller.showProduct);
 
-router.post('/:id/review', controller.addReview);
+// router.post('/:id/review', controller.addReview);
 
-router.get('/:id/review', controller.showReview);
+// router.get('/:id/review', controller.showReview);
 
 // router.post('/:id/cart', controller.addToCart);
 

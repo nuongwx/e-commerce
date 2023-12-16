@@ -19,9 +19,19 @@ router.get('/', function (req, res, next) {
     res.render('admin/home/index', { title: 'Admin' });
 });
 
-router.get('/products', productController.getProducts);
+router.get('/product', productController.getProducts);
 
-router.get('/products/:id/*', productController.getProductsById);
+router.get('/product/create', productController.createProduct);
+
+router.get('/product/:id', productController.getProductsById);
+
+router.put('/product/:id', productController.updateProduct);
+
+router.delete('/product/:id', productController.deleteProduct);
+
+router.post('/product/:id/image', productController.addImage);
+
+router.delete('/product/:id/image', productController.removeImage);
 
 router.get('/orders', function (req, res, next) {
     res.render('admin/orders/index', { title: 'Admin' });

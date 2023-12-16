@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         name: {
             type: DataTypes.TEXT,
-            allowNull: false,
+            // allowNull: false,
             // unique: true
         },
         price: {
@@ -30,13 +30,28 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.TEXT,
             // allowNull: false,
         },
-        image: {
-            type: DataTypes.TEXT,
+        images: {
+            type: DataTypes.ARRAY(DataTypes.TEXT),
             // allowNull: false,
+        },
+        image: {
+            type: DataTypes.VIRTUAL,
+            get() {
+                return this.getDataValue('images')[0];
+            },
+            set(value) {
+                this.setDataValue('images', [value]);
+            }
         },
         category_id: {
             type: DataTypes.INTEGER,
             // allowNull: false,
+        },
+        status: {
+            type: DataTypes.ENUM,
+            values: ['active', 'inactive'],
+            // allowNull: false,
+            defaultValue: 'active'
         },
         // stock: {
         //     type: DataTypes.INTEGER,

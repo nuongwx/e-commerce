@@ -1,56 +1,139 @@
 <!-- Blank Start -->
-<div class="container-fluid pt-4 px-4">
-    <div class="row bg-secondary justify-content-center rounded pt-5">
-        <div class="col-md-3 text-center pt-5">
-            <img src="{{product.image}}" alt="blank" class="img-fluid">
-            <div class="mb-3">
-                <label for="formFileSm" class="form-label">Product image</label>
-                <input class="form-control form-control-sm bg-dark" id="formFileSm" type="file">
+<form action="javascript:void(0)" onsubmit="save(); return false;">
+    <div class="container-fluid pt-4 px-4">
+        <div class="row bg-secondary justify-content-center rounded pt-5">
+            <div class="col-md-3 text-center pt-5">
+                {{#if product.images}}
+                {{#each product.images}}
+                <!-- delete button on image hover -->
+                <div class="position-relative">
+                    <img src="{{this}}" alt="blank" class="img-fluid">
+                    <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0"
+                        onclick="deleteImage('{{this}}')"><i class="fas fa-trash"></i></button>
+                </div>
+                {{/each}}
+                {{/if}}
+                {{!-- <img src="{{product.image}}" alt="blank" class="img-fluid"> --}}
+                <div class="mb-3">
+                    <label for="image" class="form-label">Product image</label>
+                    <input class="form-control form-control-sm bg-dark" id="image" type="file"
+                        oninput="uploadImage(this.files[0])" accept="image/*">
+                </div>
             </div>
-        </div>
-        <div class="col-sm-12 col-xl-6">
-            <div class="bg-secondary rounded h-100 p-4">
-                <h6 class="mb-4">Edit product</h6>
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingInput" value="{{product.name}}">
-                    <label for="floatingInput">Product Name</label>
-                </div>
-                <div class="form-floating mb-3">
-                    <input type="number" class="form-control" id="floatingPassword" value="{{product.price}}">
-                    <label for="floatingPassword">Price</label>
-                </div>
-                <div class="form-floating mb-3">
-                    <select class="form-select" id="floatingSelect" aria-label="Category">
-                        <!-- <option selected="">Coffee</option>
+            <div class="col-sm-12 col-xl-6">
+                <div class="bg-secondary rounded h-100 p-4">
+                    <h6 class="mb-4">Edit product</h6>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="product-name" value="{{product.name}}" required>
+                        <label for="product-name">Product Name</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="number" class="form-control" id="product-price" value="{{product.price}}" required>
+                        <label for="product-price">Price</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <select class="form-select" id="product-category" aria-label="Category" required>
+                            <!-- <option selected="">Coffee</option>
                         <option value="">Tea</option>
                         <option value="">Milk</option>
                         <option value="">Not a drink</option> -->
-                        {{#each categories}}
-                        <option value="{{this.id}}">{{this.name}}</option>
-                        {{/each}}
-                    </select>
-                    <label for="floatingSelect">Category</label>
-                </div>
-                <div class="form-floating">
-                    <textarea class="form-control" placeholder="Description" id="floatingTextarea"
-                        style="height: 150px;">{{product.description}}</textarea>
-                    <label for="floatingTextarea">Description</label>
+                            {{#each categories}}
+                            <option value="{{this.id}}">{{this.name}}</option>
+                            {{/each}}
+                        </select>
+                        <label for="product-category">Category</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <select class="form-select" id="product-status" aria-label="Status" required>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                        <label for="product-status">Status</label>
+                    </div>
+                    <div class="form-floating">
+                        <textarea class="form-control" placeholder="Description" id="product-description" required
+                            style="height: 150px;">{{product.description}}</textarea>
+                        <label for="product-description">Description</label>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col text-end">
-            <form action="/products">
+        <div class="row">
+            <div class="col text-end">
                 <button type="submit" class="btn btn-primary mt-3">Save</button>
                 <button type="button" onclick="history.back()" class="btn btn-danger mt-3">Cancel</button>
-            </form>
+            </div>
         </div>
     </div>
-</div>
+</form>
 
 <script>
-    const select = document.getElementById('floatingSelect');
+    const select = document.getElementById('product-category');
     select.value = "{{product.category_id}}";
+
+    const status = document.getElementById('product-status');
+    status.value = "{{product.status}}";
+
+    function save() {
+        const name = document.getElementById('product-name').value;
+        const price = document.getElementById('product-price').value;
+        const category = document.getElementById('product-category').value;
+        const description = document.getElementById('product-description').value;
+        // const image = document.getElementById('formFileSm').value;
+        const status = document.getElementById('product-status').value;
+
+
+        const data = {
+            name,
+            price,
+            category_id: category,
+            description,
+            // image
+            status,
+        }
+
+        fetch('/admin/product/{{product.id}}', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        }).then(res => {
+            if (res.status === 200) {
+                window.location.href = '/admin/product';
+            }
+        })
+    }
+
+    function uploadImage(file) {
+        const formData = new FormData();
+        formData.append('image', file);
+
+        fetch('/admin/product/{{product.id}}/image', {
+            method: 'POST',
+            body: formData
+        }).then(res => {
+            if (res.status === 200) {
+                window.location.reload();
+            }
+        })
+    }
+
+    function deleteImage(image) {
+        fetch('/admin/product/{{product.id}}/image', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                image
+            })
+        }).then(res => {
+            if (res.status === 200) {
+                window.location.reload();
+            }
+        })
+    }
+
 </script>
 <!-- Blank End -->
