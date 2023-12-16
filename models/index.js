@@ -24,6 +24,8 @@ db.Product = require("./product.js")(sequelize, Sequelize);
 db.Review = require("./review.js")(sequelize, Sequelize);
 db.Cart = require("./cart.js")(sequelize, Sequelize);
 db.CartItem = require("./cart-item.js")(sequelize, Sequelize);
+db.Order = require("./order.js")(sequelize, Sequelize);
+db.OrderItem = require("./order-item.js")(sequelize, Sequelize);
 db.Session = require("./session.js")(sequelize, Sequelize);
 
 Object.keys(db).forEach(modelName => {
@@ -200,6 +202,33 @@ if (process.env.NODE_ENV === 'development') {
             product_id: 2,
             rating: 2,
             comment: 'comment8'
+        });
+        let cart1 = db.Cart.create({
+            user_id: 1,
+        });
+        db.CartItem.create({
+            cart_id: 1,
+            product_id: 1,
+            quantity: 1,
+        });
+        db.CartItem.create({
+            cart_id: 1,
+            product_id: 2,
+            quantity: 2,
+        });
+        let order1 = db.Order.create({
+            user_id: 1,
+        });
+        db.OrderItem.create({
+            order_id: 1,
+            product_id: 1,
+            quantity: 1,
+            status: 'pending',
+        });
+        db.OrderItem.create({
+            order_id: 1,
+            product_id: 2,
+            quantity: 2,
         });
     });
 } else {

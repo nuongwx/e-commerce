@@ -1,23 +1,23 @@
 "use strict"
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-    class CartItem extends Model {
+    class OrderItem extends Model {
         static associate(models) {
-            CartItem.belongsTo(models.Cart, {
-                foreignKey: "cart_id",
+            OrderItem.belongsTo(models.Order, {
+                foreignKey: "order_id",
             });
-            CartItem.belongsTo(models.Product, {
+            OrderItem.belongsTo(models.Product, {
                 foreignKey: "product_id",
             });
         }
     };
-    CartItem.init({
+    OrderItem.init({
         id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true
         },
-        cart_id: {
+        order_id: {
             type: DataTypes.INTEGER,
             // allowNull: false,
         },
@@ -39,5 +39,5 @@ module.exports = (sequelize, DataTypes) => {
         sequelize,
         timestamps: true
     });
-    return CartItem;
+    return OrderItem;
 }

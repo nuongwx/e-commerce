@@ -23,6 +23,7 @@ var cartRouter = require('./routes/cart/cart');
 var shopRouter = require('./routes/shop/shop');
 const productRouter = require('./routes/product/index');
 var checkoutRouter = require('./routes/checkout/checkout');
+const orderRouter = require('./routes/order/index');
 var authRouter = require('./routes/auth/router');
 var profileRouter = require('./routes/user/profile');
 
@@ -53,7 +54,7 @@ app.set('views', path.join(__dirname, 'views'));
 
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -144,6 +145,8 @@ app.use('/product', productRouter);
 app.use('/cart', cartRouter);
 
 app.use('/checkout', checkoutRouter);
+
+app.use('/order', orderRouter);
 
 app.use('/user', profileRouter);
 

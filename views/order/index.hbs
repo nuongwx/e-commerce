@@ -1,0 +1,102 @@
+<!-- cart -->
+<div class="cart-section mt-150 mb-150">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-md-12">
+                <div class="cart-table-wrap">
+                    <table class="cart-table table-hover">
+                        <thead class="cart-table-head">
+                            <tr class="table-head-row">
+                                <th class="order-id">Order ID</th>
+                                <th class="order-status">Status</th>
+                                <th class="order-total">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!--
+                            <tr class="table-body-row">
+                                <td class="product-remove"><a href="#"><i class="far fa-window-close"></i></a></td>
+                                <td class="product-image"><img src="/assets/img/products/product-img-1.jpg" alt=""></td>
+                                <td class="product-name">Christmas' morning</td>
+                                <td class="product-price">$0.3</td>
+                                <td class="product-quantity"><input type="number" placeholder="0"></td>
+                                <td class="product-total">1</td>
+                            </tr> -->
+                            {{#each orders}}
+                            <tr class="table-body-row">
+                                <td class="order-id">{{this.id}}</td>
+                                <td class="order-status">{{this.status}}</td>
+                                <td class="order-total">{{this.total}}</td>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <script>
+                // view order details on row click
+                document.addEventListener("DOMContentLoaded", function () {
+                    $('.table-body-row').click(function () {
+                        var id = $(this).find('.order-id').text();
+                        // replace details on the right
+                        $.ajax({
+                            url: "/order/" + id,
+                            type: "GET",
+                            dataType: "json",
+                            success: function (data) {
+                                console.log(data);
+                                var order = data;
+                                var orderDetailsTable = $('#order-details-table tbody');
+                                orderDetailsTable.empty();
+                                for (var i = 0; i < order.OrderItems.length; i++) {
+                                    var row = $('<tr class="total-data"></tr>');
+                                    var name = $('<td>' + order.OrderItems[i].Product.name + '</td>');
+                                    var quantity = $('<td>' + order.OrderItems[i].quantity + '</td>');
+                                    var price = $('<td>' + order.OrderItems[i].Product.price + '</td>');
+                                    var total = $('<td>' + order.OrderItems[i].quantity * order.OrderItems[i].Product.price + '</td>');
+                                    row.append(name);
+                                    row.append(quantity);
+                                    row.append(price);
+                                    row.append(total);
+                                    orderDetailsTable.append(row);
+                                }
+                            }
+                        });
+                    });
+                });
+            </script>
+
+            <div class="col-lg-4">
+                <div class="total-section">
+                    <table class="total-table" id="order-details-table">
+                        <thead class="total-table-head">
+                            <tr class="table-total-row">
+                                <th>Product</th>
+                                <th>Price</th>
+                                <th>Quantity</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                    <div class="cart-buttons">
+                        <a href="/cart" class="boxed-btn">Update Cart</a>
+                        <a href="/checkout" class="boxed-btn black">Check Out</a>
+                    </div>
+                </div>
+
+                <div class="coupon-section">
+                    <h3>Apply Coupon</h3>
+                    <div class="coupon-form-wrap">
+                        <form action="/index">
+                            <p><input type="text" placeholder="Coupon"></p>
+                            <p><input type="submit" value="Apply"></p>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end cart -->
