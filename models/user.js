@@ -28,6 +28,10 @@ module.exports = (sequelize, DataTypes) => {
                 this.setDataValue('password', bcrypt.hashSync(value, salt));
             }
         },
+        image: {
+            type: DataTypes.TEXT,
+            defaultValue: "https://via.placeholder.com/150"
+        },
         name: {
             type: DataTypes.TEXT
         },

@@ -93,13 +93,14 @@
                                 </li>
                                 <li><a href="/about">About</a></li>
                                 <li><a href="/shop">Shop</a>
-                                    <ul class="sub-menu">
+                                    {{!-- <ul class="sub-menu">
                                         <li><a href="/shop">Shop</a></li>
                                         <li><a href="/product/9">Product</a></li>
                                         <li><a href="/checkout">Check Out</a></li>
                                         <li><a href="/cart">Cart</a></li>
-                                    </ul>
+                                    </ul> --}}
                                 </li>
+                                <li><a href="/cart">Cart</a></li>
                                 {{!-- <li><a href="#">Pages</a>
                                     <ul class="sub-menu">
                                         <li><a href="404">404 page</a></li>
@@ -133,7 +134,7 @@
                                         <li><a href="/admin">Management</a></li>
                                         {{/if}}
                                         <li><a href="/user/profile">Profile</a></li>
-                                        <!-- <li><a href="/cart">Cart</a></li> -->
+                                        <li><a href="/order">Orders</a></li>
                                         <li><a href="/auth/logout">Logout</a></li>
                                     </ul>
                                     {{else}}
@@ -279,13 +280,15 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.8/handlebars.js"></script>
     <script>
         (function () {
-            var revive    = Handlebars.template,
+            var revive = Handlebars.template,
                 templates = Handlebars.templates = Handlebars.templates || {};
 
-          {{#templates}}
-            templates['{{{name}}}'] = revive({{{template}}});
-          {{/templates}}
-        }());
+            { { #templates } }
+            templates['{{{name}}}'] = revive({{{ template }}});
+        {
+            {
+                /templates}}
+            } ());
     </script>
 
 </body>

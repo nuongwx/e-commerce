@@ -34,7 +34,7 @@ Object.keys(db).forEach(modelName => {
     }
 });
 if (process.env.NODE_ENV === 'development') {
-    db.sequelize.sync({ force: true }).then(() => {
+    db.sequelize.sync({ alter: true }).then(() => {
         console.log(`Database & tables created!`);
         db.sequelize.query('ALTER SEQUENCE "Users_id_seq" RESTART WITH 5;');
         db.sequelize.query('ALTER SEQUENCE "Categories_id_seq" RESTART WITH 4;');

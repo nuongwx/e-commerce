@@ -37,12 +37,12 @@ exports.register = async function (req, res) {
     let password = req.body.password;
 
     if(!email || !password) {
-        return res.render('auth/index', { title: 'Register', message: 'Invalid email or password', layout: 'auth/layout' });
+        return res.status(400).json({error: 'Invalid email and/or password'});
     } 
     const tempUser = await db.User.findOne({ where: { email: email }});
     
     if (tempUser) {
-        return res.render('auth/index', { title: 'Register', message: 'Email already exists', layout: 'auth/layout' });
+        return res.status(400).json({ error: 'Email already exists' })
     }
 
     db.User.create({
