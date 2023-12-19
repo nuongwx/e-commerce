@@ -2,6 +2,10 @@ const express = require('express');
 const router = express.Router();
 
 const productController = require('./product-controller');
+const orderRouter = require('./orders/index');
+const userRouter = require('./users/index');
+const profileRouter = require('./profile/index');
+
 
 var ensureLogIn = require('connect-ensure-login').ensureLoggedIn;
 
@@ -33,13 +37,19 @@ router.post('/product/:id/image', productController.addImage);
 
 router.delete('/product/:id/image', productController.removeImage);
 
-router.get('/orders', function (req, res, next) {
-    res.render('admin/orders/index', { title: 'Admin' });
-});
+router.use('/orders', orderRouter);
 
-router.get('/orders/:id/*', function (req, res, next) {
-    res.render('admin/orders/edit-orders', { title: 'Admin' });
-});
+router.use('/users', userRouter);
+
+router.use('/profile', profileRouter);
+
+// router.get('/orders', function (req, res, next) {
+//     res.render('admin/orders/index', { title: 'Admin' });
+// });
+
+// router.get('/orders/:id/*', function (req, res, next) {
+//     res.render('admin/orders/edit-orders', { title: 'Admin' });
+// });
 
 router.get('/statistics', function (req, res, next) {
     res.render('admin/statistics/index', { title: 'Admin' });

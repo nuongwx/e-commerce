@@ -1,0 +1,131 @@
+{{!-- {
+"total": 500,
+"id": 1,
+"user_id": 1,
+"status": "completed",
+"createdAt": "2023-12-18T03:10:48.749Z",
+"updatedAt": "2023-12-18T03:10:48.749Z",
+"OrderItems": [
+{
+"total": 100,
+"id": 1,
+"order_id": 1,
+"product_id": 1,
+"quantity": 1,
+"createdAt": "2023-12-18T03:10:48.749Z",
+"updatedAt": "2023-12-18T03:10:48.749Z",
+"Product": {
+"image":
+"https://courses.ctda.hcmus.edu.vn/pluginfile.php/1/theme_academi/logo/1699841963/fit-logo-chuan-V2-MOODLE.png",
+"id": 1,
+"name": "Tea 1",
+"price": 100,
+"description": "Chai",
+"images": [
+"https://courses.ctda.hcmus.edu.vn/pluginfile.php/1/theme_academi/logo/1699841963/fit-logo-chuan-V2-MOODLE.png"
+],
+"category_id": 1,
+"status": "active",
+"createdAt": "2023-12-18T03:10:48.740Z",
+"updatedAt": "2023-12-18T03:10:48.740Z"
+}
+},
+{
+"total": 400,
+"id": 2,
+"order_id": 1,
+"product_id": 2,
+"quantity": 2,
+"createdAt": "2023-12-18T03:10:48.749Z",
+"updatedAt": "2023-12-18T03:10:48.749Z",
+"Product": {
+"image":
+"https://courses.ctda.hcmus.edu.vn/pluginfile.php/1/theme_academi/logo/1699841963/fit-logo-chuan-V2-MOODLE.png",
+"id": 2,
+"name": "Milk 1",
+"price": 200,
+"description": "The cat likes it",
+"images": [
+"https://courses.ctda.hcmus.edu.vn/pluginfile.php/1/theme_academi/logo/1699841963/fit-logo-chuan-V2-MOODLE.png"
+],
+"category_id": 2,
+"status": "active",
+"createdAt": "2023-12-18T03:10:48.740Z",
+"updatedAt": "2023-12-18T03:10:48.740Z"
+}
+}
+]
+}
+
+--}}
+<nav>
+    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <a class="nav-link" id="nav-order-tab" data-toggle="tab" href="/admin/orders">Back</a>
+    </div>
+</nav>
+
+<div class="container fluid pt-4 px-4">
+    <div class="row">
+        <div class="col-8">
+            <div class="bg-secondary rounded h-100 p-4">
+                <h1>Order Detail</h1>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each order.OrderItems}}
+                        <tr>
+                            <td>{{Product.name}}</td>
+                            <td>{{quantity}}</td>
+                            <td>{{Product.price}}</td>
+                            <td>{{total}}</td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+                <h3>Total: {{order.total}}</h3>
+            </div>
+        </div>
+        {{!-- order's other details and status update --}}
+        <div class="col-4">
+            <div class="bg-secondary rounded h-100 p-4">
+                <h1>Order Details</h1>
+                <div class="form-group">
+                    <label for="status">Status</label>
+                    <select class="form-control" id="status">
+                        <option value="pending">Pending</option>
+                        <option value="completed">Completed</option>
+                        <option value="cancelled">Cancelled
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const status = document.querySelector('#status');
+        status.value = "{{order.status}}";
+        status.addEventListener('change', async (e) => {
+            const res = await fetch(`/admin/orders/{{order.id}}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    status: e.target.value
+                })
+            });
+            const data = await res.json();
+            console.log(data);
+        });
+    });
+</script>

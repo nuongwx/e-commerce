@@ -9,6 +9,7 @@ passport.use(new LocalStrategy({
     db.User.findOne({ where: { email: email } }).then(function (user) {
         if (!user) { return cb(null, false); }
         else if(user.length === 0) { return cb(null, false); }
+        else if(user.status === 'banned') { return cb(null, false); }
         bcrypt.compare(password, user.password, function (err, result) {
             if (err) { return cb(err); }
             if (!result) { return cb(null, false); }

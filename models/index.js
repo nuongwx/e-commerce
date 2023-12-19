@@ -33,8 +33,8 @@ Object.keys(db).forEach(modelName => {
         db[modelName].associate(db);
     }
 });
-if (process.env.NODE_ENV === 'development') {
-    db.sequelize.sync({ alter: true }).then(() => {
+if (process.env.NODE_ENV === 'development' || false) {
+    db.sequelize.sync({ force: true }).then(() => {
         console.log(`Database & tables created!`);
         db.sequelize.query('ALTER SEQUENCE "Users_id_seq" RESTART WITH 5;');
         db.sequelize.query('ALTER SEQUENCE "Categories_id_seq" RESTART WITH 4;');
@@ -46,7 +46,7 @@ if (process.env.NODE_ENV === 'development') {
             id: 1,
             email: 'ngwx@ngwx.co',
             password: '1',
-            role: 1,
+            role: 'admin',
         });
         db.User.create({
             id: 2,
@@ -57,6 +57,7 @@ if (process.env.NODE_ENV === 'development') {
             id: 3,
             email: '11@11.co',
             password: '1',
+            status: 'banned',
         });
         db.User.create({
             id: 4,

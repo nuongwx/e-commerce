@@ -36,8 +36,12 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.TEXT
         },
         role: {
-            type: DataTypes.INTEGER,
-            defaultValue: 0
+            type: DataTypes.ENUM('admin', 'user'),
+            defaultValue: 'user'
+        },
+        status: {
+            type: DataTypes.ENUM('active', 'unverified', 'banned'),
+            defaultValue: 'unverified'
         },
     }, {
         sequelize,

@@ -214,14 +214,25 @@
         <div class="col-12">
             <div class="bg-secondary rounded h-100 p-4">
                 <h6 class="mb-4">Products</h6>
+                {{!-- dropdown box filter by status --}}
+                <form class="form-inline mb-4">
+                    <select class="form-control" id="status" name="status" onchange="makeRequest()">
+                        <option value="">All</option>
+                        <option value="pending">Pending</option>
+                        <option value="completed">Completed</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
+                </form>
+
                 <div class="table-responsive">
-                    <table class="table">
+                    <table class="table" id="orderTable">
                         <thead>
                             <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Order ID</th>
-                                <th scope="col">User</th>
-                                <th scope="col">Creation time</th>
+                                {{!-- <th scope="col">#</th> --}}
+                                <th scope="col" onclick="sortTable(0)">Order ID</th>
+                                <th scope="col" onclick="sortTable(1)">User ID</th>
+                                <th scope="col" onclick="timeSort()">Creation Time</th>
+                                <th scope="col" onclick="sortTable(3)">Status</th>
                                 <th scope="col">Action</th>
                                 {{!-- <th scope="col">Country</th>
                                 <th scope="col">ZIP</th>
@@ -229,36 +240,19 @@
                             </tr>
                         </thead>
                         <tbody>
+                            {{#each orders}}
                             <tr>
-                                <th scope="row">1</th>
-                                <td>23110310DCC6FOZZ</td>
-                                <td>Adams</td>
-                                <td>14:40:16 UTC</td>
-                                <td><a href="">Manage</a></td>
+                                {{!-- <th scope="row">{{@index}}</th> --}}
+                                <td>{{this.id}}</td>
+                                <td>{{this.user_id}}</td>
+                                <td>{{this.createdAt}}</td>
+                                <td>{{this.status}}</td>
+                                <td><a href="/admin/orders/{{this.id}}">Manage</a></td>
                                 {{!-- <td>USA</td>
                                 <td>123</td>
                                 <td>Member</td> --}}
                             </tr>
-                            <tr>
-                                <th scope="row">2</th>
-                                <td>2311036UGQUFUC8F</td>
-                                <td>Jeff</td>
-                                <td>14:37:38 UTC</td>
-                                <td><a href="">Manage</a></td>
-                                {{!-- <td>UK</td>
-                                <td>456</td>
-                                <td>Member</td> --}}
-                            </tr>
-                            <tr>
-                                <th scope="row">3</th>
-                                <td>231103W1LZM046EP</td>
-                                <td>Albert</td>
-                                <td>13:42:34 UTC</td>
-                                <td><a href="">Manage</a></td>
-                                {{!-- <td>AU</td>
-                                <td>789</td>
-                                <td>Member</td> --}}
-                            </tr>
+                            {{/each}}
                         </tbody>
                     </table>
                 </div>
@@ -267,3 +261,142 @@
     </div>
 </div>
 <!-- Table End -->
+
+<script>
+
+    let urlParams = new URLSearchParams(window.location.search);
+    let sort = urlParams.get('sort') || "asc";
+    let status = urlParams.get('status') || "";
+
+    document.getElementById("status").value = status;
+
+    // i *really* don't know how to do this xd
+    // sort table by column
+    function sortTable(n) {
+        var table,
+            rows,
+            switching,
+            i,
+            x,
+            y,
+            shouldSwitch,
+            dir,
+            switchcount = 0;
+        table = document.getElementById("orderTable");
+        switching = true;
+        // Set the sorting direction to ascending:
+        dir = "asc";
+        /* Make a loop that will continue until
+         no switching has been done: */
+        while (switching) {
+            // Start by saying: no switching is done:
+            switching = false;
+            rows = table.rows;
+            /* Loop through all table rows (except the
+             first, which contains table headers): */
+            for (i = 1; i < rows.length - 1; i++) {
+                // Start by saying there should be no switching:
+                shouldSwitch = false;
+                /* Get the two elements you want to compare,
+                 one from current row and one from the next: */
+                x = rows[i].getElementsByTagName("TD")[n];
+                y = rows[i + 1].getElementsByTagName("TD")[n];
+                /* Check if the two rows should switch place,
+                 based on the direction, asc or desc: */
+
+                if (n == 2) {
+                    x = new Date(x.innerHTML);
+                    y = new Date(y.innerHTML);
+
+                    console.log(x);
+
+                    if (dir == "asc") {
+                        if (x > y) {
+                            // If so, mark as a switch and break the loop:
+                            shouldSwitch = true;
+                            break;
+                        }
+                    } else if (dir == "desc") {
+                        if (x < y) {
+                            // If so, mark as a switch and break the loop:
+                            shouldSwitch = true;
+                            break;
+                        }
+                    }
+                } else if (dir == "asc") {
+                    if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                        // If so, mark as a switch and break the loop:
+                        shouldSwitch = true;
+                        break;
+                    }
+                } else if (dir == "desc") {
+                    if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                        // If so, mark as a switch and break the loop:
+                        shouldSwitch = true;
+                        break;
+                    }
+                }
+            }
+            if (shouldSwitch) {
+                /* If a switch has been marked, make the switch
+                 and mark that a switch has been done: */
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+                // Each time a switch is done, increase this count by 1:
+                switchcount++;
+            } else {
+                /* If no switching has been done AND the direction is "asc",
+                 set the direction to "desc" and run the while loop again. */
+                if (switchcount == 0 && dir == "asc") {
+                    dir = "desc";
+                    switching = true;
+                }
+            }
+        }
+    }
+
+    function filterTable() {
+        console.log("filter");
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById("status");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("orderTable");
+        tr = table.getElementsByTagName("tr");
+        for (i = 1; i < tr.length; i++) {
+            // Hide the row initially.
+            tr[i].style.display = "none";
+
+            td = tr[i].getElementsByTagName("td");
+            for (var j = 0; j < td.length; j++) {
+                cell = tr[i].getElementsByTagName("td")[j];
+                if (cell) {
+                    if (cell.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    // refresh page with new order
+    function timeSort() {
+        if (sort == "asc") {
+            sort = "desc";
+        } else {
+            sort = "asc";
+        }
+        window.location.href = "/admin/orders?sort=" + sort + "&status=" + status;
+    }
+
+    function makeRequest() {
+        status = document.getElementById("status").value;
+        let urlParams = new URLSearchParams(window.location.search);
+        let sort = urlParams.get('sort') || "asc";
+        let url = new URL(window.location.href);
+        url.searchParams.set('status', status);
+        url.searchParams.set('sort', sort);
+
+        window.location.href = url;
+    }
+</script>

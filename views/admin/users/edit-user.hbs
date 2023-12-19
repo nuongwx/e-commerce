@@ -1,0 +1,55 @@
+{{!-- user editor --}}
+<form action="javascript:void(0)">
+    <div class="container-fluit pt-4 px-4">
+        <div class="row bg-secondary justify-content-center rounded pt-5">
+            <div class="col-md-3 text-center pt-5">
+                <img src="{{user.image}}" alt="blank" class="img-fluid">
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control bg-dark" id="email" value="{{user.email}}" disabled>
+                <label for="user-role">Role</label>
+                <select class="form-select" id="user-role" aria-label="Role" required onchange="save()">
+                    <option value="admin">Admin</option>
+                    <option value="user">User</option>
+                </select>
+                <label for="user-status">Status</label>
+                <select class="form-select" id="user-status" aria-label="Status" required onchange="save()">
+                    <option value="active">Active</option>
+                    <option value="banned">Banned</option>
+                    <option value="unverified">Unverified</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const role = document.querySelector('#user-role');
+        const status = document.querySelector('#user-status');
+        role.value = '{{user.role}}';
+        status.value = '{{user.status}}';
+    });
+
+    function save() {
+        const role = document.querySelector('#user-role').value;
+        const status = document.querySelector('#user-status').value;
+        const data = {
+            role,
+            status
+        };
+        fetch(`/admin/users/{{user.id}}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        }).then(res => res.json())
+            .then(data => {
+                console.log(data);
+            })
+            .catch(err => console.log(err));
+
+    }
+</script>

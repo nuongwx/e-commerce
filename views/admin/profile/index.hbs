@@ -1,0 +1,136 @@
+<div class="container">
+    <div class="row" style="height: 100vh; margin: 100px;">
+        <div class="col-12">
+            <h1>Profile</h1>
+            <form onsubmit="updateProfile(); return false;" novalidate>
+                <div class="row">
+                    <div class="col-md-9">
+                        <label for="email">Email address</label>
+                        <input type="email" value="{{user.email}}" class="form-control" id="email"
+                            aria-describedby="emailHelp" disabled>
+                        <label for="currentPassword">Current Password</label>
+                        <input type="password" class="form-control" id="currentPassword" placeholder="Password">
+                        <label for="newPassword">New Password</label>
+                        <input type="password" class="form-control" id="newPassword" placeholder="Password">
+                        <label for="confirmNewPassword">Confirm Password</label>
+                        <input type="password" class="form-control" id="confirmNewPassword" placeholder="Password">
+                    </div>
+                    <div class="col-md-3">
+                        <img src="{{user.image}}" alt="avatar" class="img-fluid" id="profile-image">
+                        <input type="file" class="form-control-file" id="image" onchange="uploadImage()">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Update</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function uploadImage() {
+        var file = document.getElementById("image").files[0];
+        var formData = new FormData();
+        formData.append("image", file);
+        $.ajax({
+            url: "lol",
+            type: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                console.log(data);
+                document.getElementById("profile-image").src = data.image;
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        });
+    }
+
+    document.getElementById("currentPassword").oninput = function () {
+        document.getElementById("currentPassword").setCustomValidity("");
+    }
+
+    document.getElementById("newPassword").oninput = function () {
+        document.getElementById("newPassword").setCustomValidity("");
+    }
+
+    document.getElementById("confirmNewPassword").oninput = function () {
+        document.getElementById("confirmNewPassword").setCustomValidity("");
+    }
+
+    function updateProfile() {
+        console.log("updateProfile");
+
+        document.getElementById("currentPassword").setCustomValidity("");
+        document.getElementById("newPassword").setCustomValidity("");
+        document.getElementById("confirmNewPassword").setCustomValidity("");
+
+        var currentPassword = document.getElementById("currentPassword").value;
+        var newPassword = document.getElementById("newPassword").value;
+        var confirmNewPassword = document.getElementById("confirmNewPassword").value;
+
+        if (currentPassword != "" || newPassword != "" || confirmNewPassword != "") {
+            document.getElementById("currentPassword").setCustomValidity("Please enter your current password");
+            document.getElementById("newPassword").setCustomValidity("Please enter your new password");
+            document.getElementById("confirmNewPassword").setCustomValidity("Please confirm your new password");
+        }
+        if (currentPassword != "") {
+            document.getElementById("currentPassword").setCustomValidity("");
+        }
+        if (newPassword != "") {
+            document.getElementById("newPassword").setCustomValidity("");
+        }
+        if (confirmNewPassword != "") {
+            document.getElementById("confirmNewPassword").setCustomValidity("");
+        }
+
+
+        if (document.getElementById("currentPassword").reportValidity() && document.getElementById("newPassword").reportValidity() && document.getElementById("confirmNewPassword").reportValidity()) {
+            if (newPassword != confirmNewPassword) {
+                // document.getElementById("newPassword").setCustomValidity("Passwords do not match");
+                document.getElementById("confirmNewPassword").setCustomValidity("Passwords do not match");
+                // document.getElementById("newPassword").reportValidity();
+                document.getElementById("confirmNewPassword").reportValidity();
+                return;
+            } else if (currentPassword == "" && newPassword == "" && confirmNewPassword == "") {
+                console.log("empty");
+                return;
+            } else if (RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])").test(newPassword) == false) {
+                document.getElementById("newPassword").setCustomValidity("Password must contain at least one lowercase letter, one uppercase letter, one number, and one special character");
+                // document.getElementById("confirmNewPassword").setCustomValidity("Password must contain at least one lowercase letter, one uppercase letter, one number, and one special character");
+                // document.getElementById("confirmNewPassword").reportValidity();
+                document.getElementById("newPassword").reportValidity();
+                return;
+            } else if (currentPassword == newPassword) {
+                document.getElementById("newPassword").setCustomValidity("New password cannot be the same as current password");
+                document.getElementById("newPassword").reportValidity();
+                return;
+            }
+            console.log("valid");
+            var formData = new FormData();
+            formData.append("currentPassword", currentPassword);
+            formData.append("newPassword", newPassword);
+            formData.append("confirmNewPassword", confirmNewPassword);
+
+
+            $.ajax({
+                url: "lol",
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    console.log(data);
+                    window.location.href = "lol";
+                },
+                error: function (data) {
+                    console.log(data);
+                    document.getElementById("currentPassword").setCustomValidity(data.responseJSON.error);
+                    document.getElementById("currentPassword").reportValidity();
+                    return;
+                }
+            });
+        }
+    }
+</script>
