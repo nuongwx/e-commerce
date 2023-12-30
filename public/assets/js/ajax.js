@@ -41,19 +41,33 @@ function getSearchResults() {
                 pagination += '<li><a href="#" rel="' + i + '">' + i + '</a></li>';
             }
             document.querySelector('.pagination-wrap ul').innerHTML = pagination;
+            
+            let products = Array.from(data.products.rows);
+            document.getElementsByClassName("product-lists")[0].innerHTML = "";
+            products.forEach(function (product) {
+                $(".product-lists").append(Handlebars.templates.product(product));
+                $(".product-lists").isotope('reloadItems').isotope();
+            });
 
             $('.pagination-wrap ul li a:first').addClass('active');
             $('.pagination-wrap ul li a').click(function (e) {
                 $('.pagination-wrap ul li a').removeClass('active');
                 $(this).addClass('active');
-                let current = $(this).attr('rel');
-                let offset = limit * (current - 1);
-                let products = Array.from(data.products.rows).slice(offset, offset + limit);
-                document.getElementsByClassName("product-lists")[0].innerHTML = "";
-                products.forEach(function (product) {
-                    $(".product-lists").append(Handlebars.templates.product(product));
-                    $(".product-lists").isotope('reloadItems').isotope();
-                });
+                e.preventDefault();
+                var pageNum = this.rel;
+                $.ajax({
+                    url: '/shop/query?category_id=' + document.getElementById('category').value + '&min=' + document.getElementById('min').value + '&max=' + document.getElementById('max').value + '&sort=' + document.getElementById('sort').value + '&order=' + document.getElementById('order').value + '&name=' + document.getElementById('name').value + '&page=' + pageNum,
+                    type: 'GET',
+                    success: function (data) {
+                        console.log(data);
+                        document.getElementsByClassName("product-lists")[0].innerHTML = "";
+                        let products = Array.from(data.products.rows);
+                        products.forEach(function (product) {
+                            $(".product-lists").append(Handlebars.templates.product(product));
+                            $(".product-lists").isotope('reloadItems').isotope();
+                        });
+                    }
+                });                
             });
             document.getElementsByClassName('active')[0].click();
         }

@@ -4,6 +4,35 @@
         <div class="col-12">
             <div class="bg-secondary rounded h-100 p-4">
                 <h6 class="mb-4">Responsive Table</h6>
+                <form class="row mb-4" onsubmit="offset = 1; filterUsers(); return false;">
+                    {{!-- search --}}
+                    <div class="col-auto">
+                        <input type="text" class="form-control" placeholder="Search" id="email">
+                    </div>
+                    {{!-- sort  --}}
+                    <div class="col-auto">
+                        <select class="form-select" id="sort">
+                            <option value="email" selected>Email</option>
+                            <option value="role">Role</option>
+                            <option value="status">Status</option>
+                            <option value="createdAt">Creation time</option>
+                        </select>
+                    </div>
+                    {{!-- order --}}
+                    <div class="col-auto">
+                        <select class="form-select" id="order">
+                            <option value="asc" selected >Ascending</option>
+                            <option value="desc">Descending</option>
+                        </select>
+                    </div>
+                    {{!-- filter --}}
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-primary">Filter</button>
+                    </div>
+                    <div class="col-auto ms-auto">
+                        <a href="/admin/users" class="btn btn-primary">Create</a>
+                    </div>
+                </form>
                 <div class="table-responsive">
                     <table class="table table-hover">
                         <thead>
@@ -16,23 +45,50 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {{#each users}}
-                            <tr>
-                                <th scope="row">{{id}}</th>
-                                <td>{{email}}</td>
-                                <td>{{role}}</td>
-                                <td>{{status}}</td>
-                                <td>
-                                    <a href="/admin/users/{{id}}" class="btn btn-primary btn-sm">Edit</a>
-                                    <a href="/admin/users/delete/{{id}}" class="btn btn-danger btn-sm">Delete</a>
-                                </td>
-                            </tr>
-                            {{/each}}
                         </tbody>
                     </table>
                 </div>
+                <button type="button" class="btn btn-primary" onclick="filterUsers();">Load More</button>
+            
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    let offset = 1;
+    let limit = 3;
+    function filterUsers() {
+        $.ajax({
+            url: '/admin/users/query',
+            type: 'GET',
+            data: {
+                email: $('#email').val(),
+                sort: $('#sort').val(),
+                order: $('#order').val(),
+                page: Math.floor(offset / limit) + 1,
+            },
+            success: function(data) {
+                console.log(data);
+                $('tbody').empty();
+                data.rows.forEach(function(user) {
+                    $('tbody').append(`
+                        <tr>
+                            <th scope="row">${user.id}</th>
+                            <td>${user.email}</td>
+                            <td>${user.role}</td>
+                            <td>${user.status}</td>
+                            <td>
+                                <a href="/admin/users/${user.id}" class="btn btn-primary btn-sm">Edit</a>
+                                <a href="/admin/users/delete/${user.id}" class="btn btn-danger btn-sm">Delete</a>
+                            </td>
+                        </tr>
+                    `);
+                });
+                offset += data.rows.length;
+                console.log(offset);
+            }
+        });
+    }
+</script>
 <!-- Table End -->

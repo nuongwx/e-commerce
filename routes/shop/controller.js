@@ -58,7 +58,7 @@ exports.queryList = async (req, res, next) => {
 
     query.status = 'active';
 
-    let products = await db.Product.findAndCountAll({ where: query, order: order, offset: offset });
+    let products = await db.Product.findAndCountAll({ where: query, order: order, offset: offset, limit: 3 });
     // let categories = await db.Product.findAll({ attributes: ['category'], group: ['category'] });
     let categories = await db.Category.findAll();
     return res.json({ products: products, categories: categories });

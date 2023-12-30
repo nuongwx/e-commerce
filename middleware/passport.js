@@ -12,7 +12,8 @@ passport.use(new LocalStrategy({
         else if(user.status === 'banned') { return cb(null, false); }
         bcrypt.compare(password, user.password, function (err, result) {
             if (err) { return cb(err); }
-            if (!result) { return cb(null, false); }
+            if (!result) { return cb({ error: 'Incorrect password' }); }
+            if(user.verified === false) { return cb({ error: 'Email not verified' }); }
             return cb(null, user);
         });
     });

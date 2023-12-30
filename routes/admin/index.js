@@ -6,14 +6,19 @@ const orderRouter = require('./orders/index');
 const userRouter = require('./users/index');
 const profileRouter = require('./profile/index');
 
+const db = require('../../models');
+
 
 var ensureLogIn = require('connect-ensure-login').ensureLoggedIn;
 
 var ensureLoggedIn = ensureLogIn('/auth/login');
 
 router.all('/*', ensureLoggedIn, function (req, res, next) {
-    if(req.user.role) {
-        next();
+    if (req.user.role) {
+        db.User.findByPk(req.user.id).then(user => {
+            res.locals.user = user;
+            next();
+        });
     } else {
         res.redirect(401, '/auth/login');
     }

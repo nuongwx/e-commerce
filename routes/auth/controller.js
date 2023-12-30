@@ -35,3 +35,15 @@ exports.register = async function (req, res, next) {
     console.log(req.body);
     authService.register(req, res, next);
 }
+
+exports.verifyEmail = async function (req, res, next) {
+    authService.verifyEmail(req, res, next);
+}
+
+exports.forgotPassword = async function (req, res, next) {
+    authService.forgotPassword(req, res, next);
+}
+
+exports.resetPassword = async function (req, res, next) {
+    authService.resetPassword(req, res, next);
+}

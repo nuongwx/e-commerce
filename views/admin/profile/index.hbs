@@ -2,7 +2,7 @@
     <div class="row" style="height: 100vh; margin: 100px;">
         <div class="col-12">
             <h1>Profile</h1>
-            <form onsubmit="updateProfile(); return false;" novalidate>
+            <form onsubmit="updateProfile(); return false;">
                 <div class="row">
                     <div class="col-md-9">
                         <label for="email">Email address</label>
@@ -32,7 +32,7 @@
         var formData = new FormData();
         formData.append("image", file);
         $.ajax({
-            url: "lol",
+            url: "/admin/profile/avatar",
             type: "POST",
             data: formData,
             processData: false,
@@ -40,6 +40,7 @@
             success: function (data) {
                 console.log(data);
                 document.getElementById("profile-image").src = data.image;
+                document.getElementById("image").value = "";
             },
             error: function (data) {
                 console.log(data);
@@ -115,14 +116,14 @@
 
 
             $.ajax({
-                url: "lol",
+                url: "/admin/profile",
                 type: "POST",
                 data: formData,
                 processData: false,
                 contentType: false,
                 success: function (data) {
                     console.log(data);
-                    window.location.href = "lol";
+                    window.location.href = "/admin/profile";
                 },
                 error: function (data) {
                     console.log(data);

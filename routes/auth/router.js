@@ -21,7 +21,8 @@ router.post('/login', function (req, res, next) {
     query.session_id = req.session.id;
     passport.authenticate('local', function (err, user, info) {
         console.log('user', user);
-        if (err) { return next(err); }
+        // if (err) { return next(err); }
+        if (err) { console.log(err); return res.redirect('/auth/login'); }
         if (!user) { return res.redirect('/auth/login'); }
         db.Cart.findOne({ where: query }).then(async function (session_cart) {
             let user_cart = await db.Cart.findOne({ where: { user_id: user.id } });
@@ -64,5 +65,19 @@ router.post('/logout', authController.logout);
 router.get('/register', authController.getRegister);
 
 router.post('/register', authController.register);
+
+router.get('/verify-email', authController.verifyEmail);
+
+router.post('/forgot', authController.forgotPassword);
+
+router.get('/forgot', function (req, res, next) {
+    res.render('auth/index', { title: 'Forgot Password', layout: 'auth/layout', forgot: true });
+});
+
+router.get('/reset-password', function (req, res, next) {
+    res.render('auth/index', { title: 'Reset Password', layout: 'auth/layout', reset: true });
+});
+
+router.post('/reset-password', authController.resetPassword);
 
 module.exports = router;

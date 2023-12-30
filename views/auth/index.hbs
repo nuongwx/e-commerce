@@ -46,7 +46,8 @@
                     </form>
                 </div>
                 <p class="text-center mb-0">Doesn't have an account? <a href="/auth/register">Sign Up</a></p>
-                {{else}}
+                {{/if}}
+                {{#if register}}
                 <div>
                     <h1>Sign Up</h1>
                     <form onsubmit="sendRegister(); return false;" novalidate>
@@ -66,6 +67,7 @@
                     </form>
                 </div>
                 <p class="text-center mb-0">Already have an account? <a href="/auth/login">Sign In</a></p>
+
                 <script>
                     document.getElementById('email').oninput = function () {
                         document.getElementById('email').setCustomValidity('');
@@ -139,7 +141,142 @@
                     }
                 </script>
                 {{/if}}
+                {{#if forgot}}
+                <div>
+                    <h1>Forgot Password</h1>
+                    <form onsubmit="sendForgot(); return false;" novalidate>
+                        <div class="form-floating mb-3">
+                            <label for="email">Email</label>
+                            <input id="email" name="email" type="email" autocomplete="email" required autofocus
+                                class="form-control">
+                            <button type="submit" class="btn btn-primary py-3 w-100" style="margin: 20px 0;">Send
+                                Email</button>
+                        </div>
+                    </form>
+                </div>
+                <p class="text-center mb-0">Remember your password? <a href="/auth/login">Sign In</a></p>
+                <script>
+                    document.getElementById('email').oninput = function () {
+                        document.getElementById('email').setCustomValidity('');
+                    }
+
+                    function sendForgot() {
+                        console.log('send forgot')
+
+                        var email = document.getElementById('email').value;
+
+                        if (document.getElementById('email').value == '') {
+                            document.getElementById('email').setCustomValidity('Email is required.');
+                        }
+
+                        if (document.getElementById('email').reportValidity()) {
+                            console.log('ok');
+                        } else {
+                            return;
+                        }
+
+                        var data = {
+                            email: email
+                        };
+
+                        $.ajax({
+                            type: "POST",
+                            url: "/auth/forgot",
+                            data: data,
+                            success: function (data) {
+                                console.log(data);
+                                window.location.href = '/auth/login';
+                            },
+                            error: function (data) {
+                                console.log(data);
+                                document.getElementById('email').setCustomValidity(data.responseJSON.error);
+                                document.getElementById('email').reportValidity();
+                            }
+                        });
+                    }
+                </script>
+                {{/if}}
+                {{#if reset}}
+                <div>
+                    <h1>Reset Password</h1>
+                    <form onsubmit="sendReset(); return false;" novalidate>
+                        <div class="form-floating mb-3">
+                            <label for="password">Password</label>
+                            <input id="password" name="password" type="password" autocomplete="password" required
+                                class="form-control">
+                            <label for="password_confirmation">Password Confirmation</label>
+                            <input id="password_confirmation" name="password_confirmation" type="password"
+                                autocomplete="password_confirmation" required class="form-control">
+                            <button type="submit" class="btn btn-primary py-3 w-100" style="margin: 20px 0;">Reset
+                                Password</button>
+                        </div>
+                    </form>
+                </div>
+                <script>
+                    document.getElementById('password').oninput = function () {
+                        document.getElementById('password').setCustomValidity('');
+                    }
+
+                    document.getElementById('password_confirmation').oninput = function () {
+                        document.getElementById('password_confirmation').setCustomValidity('');
+                    }
+
+                    function sendReset() {
+                        console.log('send reset')
+
+                        var password = document.getElementById('password').value;
+
+                        if (document.getElementById('password').value == '') {
+                            document.getElementById('password').setCustomValidity('Password is required.');
+                        }
+
+                        if (document.getElementById('password_confirmation').value == '') {
+                            document.getElementById('password_confirmation').setCustomValidity(
+                                'Password confirmation is required.');
+                        }
+
+                        if (document.getElementById('password').reportValidity() && document.getElementById('password_confirmation').reportValidity()) {
+                            if (document.getElementById('password').value != document.getElementById(
+                                'password_confirmation').value) {
+                                document.getElementById('password_confirmation').setCustomValidity(
+                                    'Password confirmation must match password.');
+                                document.getElementById('password_confirmation').reportValidity();
+                                return;
+                            } else if (RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])").test(document.getElementById('password').value) == false) {
+                                document.getElementById('password').setCustomValidity(
+                                    'Password must contain at least one lowercase letter, one uppercase letter, one number and one special character.');
+                                document.getElementById('password').reportValidity();
+                                return;
+                            } else {
+                                console.log('ok');
+                            }
+                        } else {
+                            return;
+                        }
+
+                        var data = {
+                            password: password
+                        };
+                        var token = window.location.href.split('?token=')[1];
+                        $.ajax({
+                            type: "POST",
+                            url: "/auth/reset-password?token=" + token,
+                            data: data,
+                            success: function (data) {
+                                console.log(data);
+                                window.location.href = '/auth/login';
+                            },
+                            error: function (data) {
+                                console.log(data);
+                                document.getElementById('password').setCustomValidity(data.responseJSON.error);
+                                document.getElementById('password').reportValidity();
+                            }
+                        });
+                    }
+                </script>
+                {{/if}}
             </div>
+            <p class="text-center mb-0">Forgot your password? <a href="/auth/forgot">Reset Password</a></p>
         </div>
     </div>
 </div>

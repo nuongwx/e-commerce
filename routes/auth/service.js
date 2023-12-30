@@ -1,5 +1,6 @@
 const passport = require('../../middleware/passport');
 const db = require('../../models/index');
+const jwt = require('jsonwebtoken');
 
 exports.login = function (req, res, next) {
     passport.authenticate('local', function (err, user, info) {
@@ -49,10 +50,10 @@ exports.register = async function (req, res) {
         email: email,
         password: password
     }).then(function (user) {
-        req.logIn(user, function (err) {
-            if (err) { return next(err); }
-            return res.redirect('/user/profile');
-        });
+        const token = jwt.sign({ _id: user.id }, process.env.TOKEN_SECRET, { expiresIn: '1h' });
+        const link = process.env.HOST + '/auth/verify-email?token=' + token;
+        console.log(link);
+        return res.status(200).json({ link: link });
     });
 }
 
@@ -64,3 +65,60 @@ exports.ensureLoggedIn = function (req, res, next) {
     res.redirect('/auth/index');
 }
 
+exports.verifyEmail = async function (req, res) {
+    let token = req.query.token;
+    if (!token) {
+        return res.status(400).json({ error: 'Invalid token' });
+    }
+    try {
+        const verified = jwt.verify(token, process.env.TOKEN_SECRET);
+        const user = await db.User.findOne({ where: { id: verified._id } });
+        if (user) {
+            user.update({
+                verified: true
+            }).then(function (user) {
+                return res.redirect('/auth/login');
+            });
+        }
+    }
+    catch (err) {
+        res.status(400).json({ error: 'Invalid token' });
+    }
+}
+
+exports.forgotPassword = async function (req, res) {
+    let email = req.body.email;
+    if (!email) {
+        return res.status(400).json({ error: 'Invalid email' });
+    }
+    const user = await db.User.findOne({ where: { email: email } });
+    if (!user) {
+        return res.status(400).json({ error: 'Email does not exist' });
+    }
+    const token = jwt.sign({ _id: user.id }, process.env.TOKEN_SECRET, { expiresIn: '1h' });
+    const link = process.env.HOST + '/auth/reset-password?token=' + token;
+    console.log(link);
+    return res.status(200).json({ link: link });
+}
+
+exports.resetPassword = async function (req, res) {
+    let token = req.query.token;
+    let password = req.body.password;
+    if (!token) {
+        return res.status(400).json({ error: 'Invalid token' });
+    }
+    try {
+        const verified = jwt.verify(token, process.env.TOKEN_SECRET);
+        const user = await db.User.findOne({ where: { id: verified._id } });
+        if (user) {
+            user.update({
+                password: password
+            }).then(function (user) {
+                return res.redirect('/auth/login');
+            });
+        }
+    }
+    catch (err) {
+        res.status(400).json({ error: 'Invalid token' });
+    }
+}

@@ -40,8 +40,12 @@ module.exports = (sequelize, DataTypes) => {
             defaultValue: 'user'
         },
         status: {
-            type: DataTypes.ENUM('active', 'unverified', 'banned'),
-            defaultValue: 'unverified'
+            type: DataTypes.ENUM('active', 'banned'),
+            defaultValue: 'active'
+        },
+        verified: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
         },
     }, {
         sequelize,
