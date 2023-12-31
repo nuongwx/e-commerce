@@ -6,6 +6,18 @@ module.exports = (sequelize, DataTypes) => {
         static associate(models) {
             User.hasMany(models.Review, {
                 foreignKey: "user_id",
+                onDelete: 'CASCADE',
+                hooks: true,
+            });
+            User.hasOne(models.Cart, {
+                foreignKey: "user_id",
+                onDelete: 'CASCADE',
+                hooks: true,
+            });
+            User.hasMany(models.Order, {
+                foreignKey: "user_id",
+                onDelete: 'CASCADE',
+                hooks: true,
             });
         }
     }

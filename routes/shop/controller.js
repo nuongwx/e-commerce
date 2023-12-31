@@ -51,7 +51,7 @@ exports.queryList = async (req, res, next) => {
     }
 
     for (let key in query) {
-        if (key !== 'price' && key !== 'category_id' && key !== 'name' && key !== 'sort' && key !== 'order') {
+        if (key !== 'price' && key !== 'category_id' && key !== 'name') {
             delete query[key];
         }
     }

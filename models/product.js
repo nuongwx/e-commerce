@@ -9,6 +9,18 @@ module.exports = (sequelize, DataTypes) => {
             Product.belongsTo(models.Category, {
                 foreignKey: "category_id",
             });
+            // cascade delete cart items
+            Product.hasMany(models.CartItem, {
+                foreignKey: "product_id",
+                onDelete: 'CASCADE',
+                hooks: true,
+            });
+            // cascade delete order items
+            Product.hasMany(models.OrderItem, {
+                foreignKey: "product_id",
+                onDelete: 'CASCADE',
+                hooks: true,
+            });
         }
     }
     Product.init({
@@ -37,7 +49,10 @@ module.exports = (sequelize, DataTypes) => {
         image: {
             type: DataTypes.VIRTUAL,
             get() {
-                return this.getDataValue('images')[0];
+                if (this.getDataValue('images') && this.getDataValue('images').length > 0) {
+                    return this.getDataValue('images')[0];
+                }
+                return 'https://via.placeholder.com/150';
             },
             set(value) {
                 this.setDataValue('images', [value]);
@@ -62,4 +77,5 @@ module.exports = (sequelize, DataTypes) => {
         timestamps: true
     });
     return Product;
+    
 }

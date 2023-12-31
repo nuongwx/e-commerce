@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const productController = require('./product-controller');
+const productRouter = require('./products/index');
 const orderRouter = require('./orders/index');
 const userRouter = require('./users/index');
 const profileRouter = require('./profile/index');
@@ -28,19 +28,7 @@ router.get('/', function (req, res, next) {
     res.render('admin/home/index', { title: 'Admin' });
 });
 
-router.get('/product', productController.getProducts);
-
-router.get('/product/create', productController.createProduct);
-
-router.get('/product/:id', productController.getProductsById);
-
-router.put('/product/:id', productController.updateProduct);
-
-router.delete('/product/:id', productController.deleteProduct);
-
-router.post('/product/:id/image', productController.addImage);
-
-router.delete('/product/:id/image', productController.removeImage);
+router.use('/product', productRouter);
 
 router.use('/orders', orderRouter);
 

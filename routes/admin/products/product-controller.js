@@ -1,4 +1,4 @@
-const db = require('../../models');
+const db = require('../../../models');
 const cloudinary = require('cloudinary').v2;
 
 exports.createProduct = async (req, res, next) => {
@@ -28,26 +28,26 @@ exports.updateProduct = async (req, res, next) => {
 
 exports.deleteProduct = async (req, res, next) => {
     if (!req.params.id) {
-        return res.redirect('/shop');
+        return res.status(404).json({ message: 'Product not found.' });
     }
     let id = req.params.id;
     let product = await db.Product.findOne({ where: { id: id } });
     if (!product) {
-        return res.redirect('/shop');
+        return res.status(404).json({ message: 'Product not found.' });
     }
     await product.destroy();
-    return res.redirect('/admin/products');
+    return res.json({ message: 'Product deleted.' });
 }
 
 exports.addImage = async (req, res, next) => {
     console.log(req.files);
     if (!req.params.id) {
-        return res.redirect('/shop');
+        return res.status(404).json({ message: 'Product not found.' });
     }
     let id = req.params.id;
     let product = await db.Product.findOne({ where: { id: id } });
     if (!product) {
-        return res.redirect('/shop');
+        return res.status(404).json({ message: 'Product not found.' });
     }
     cloudinary.uploader.upload_stream(async (error, result) => {
         if (error) {
@@ -70,12 +70,12 @@ exports.addImage = async (req, res, next) => {
 
 exports.removeImage = async (req, res, next) => {
     if (!req.params.id) {
-        return res.redirect('/shop');
+        return res.status(404).json({ message: 'Product not found.' });
     }
     let id = req.params.id;
     let product = await db.Product.findOne({ where: { id: id } });
     if (!product) {
-        return res.redirect('/shop');
+        return res.json({ message: 'Product not found.' });
     }
     let index = product.images.indexOf(req.body.image);
     if (index > -1) {
