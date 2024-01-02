@@ -1,13 +1,25 @@
 <!-- Chart Start -->
 <div class="container-fluid pt-4 px-4">
     <div class="row g-4">
-        {{!-- <div class="col-sm-12 col-xl-6">
+        <div class="col-sm-12 col-xl-6">
             <div class="bg-secondary rounded h-100 p-4">
                 <h6 class="mb-4">Single Line Chart</h6>
-                <canvas id="line-chart"></canvas>
+                <canvas id="weekly"></canvas>
             </div>
-        </div> --}}
+        </div>
         <div class="col-sm-12 col-xl-6">
+            <div class="bg-secondary rounded h-100 p-4">
+                <h6 class="mb-4">Single Line Chart</h6>
+                <canvas id="yearly"></canvas>
+            </div>
+        </div>
+        <div class="col-sm-12 col-xl-6">
+            <div class="bg-secondary rounded h-100 p-4">
+                <h6 class="mb-4">Single Line Chart</h6>
+                <canvas id="anually"></canvas>
+            </div>
+        </div>
+        {{!-- <div class="col-sm-12 col-xl-6">
             <div class="bg-secondary rounded h-100 p-4">
                 <h6 class="mb-4">Orders overview</h6>
                 <canvas id="worldwide-sales"></canvas>
@@ -19,19 +31,19 @@
                 <canvas id="salse-revenue"></canvas>
             </div>
         </div>
-        {{!-- <div class="col-sm-12 col-xl-6">
+        <div class="col-sm-12 col-xl-6">
             <div class="bg-secondary rounded h-100 p-4">
                 <h6 class="mb-4">Single Bar Chart</h6>
                 <canvas id="bar-chart"></canvas>
             </div>
-        </div> --}}
-        {{!-- <div class="col-sm-12 col-xl-6">
+        </div>
+        <div class="col-sm-12 col-xl-6">
             <div class="bg-secondary rounded h-100 p-4">
                 <h6 class="mb-4">Pie Chart</h6>
                 <canvas id="pie-chart"></canvas>
             </div>
-        </div> --}}
-        {{!-- <div class="col-sm-12 col-xl-6">
+        </div>
+        <div class="col-sm-12 col-xl-6">
             <div class="bg-secondary rounded h-100 p-4">
                 <h6 class="mb-4">Doughnut Chart</h6>
                 <canvas id="doughnut-chart"></canvas>
@@ -39,4 +51,197 @@
         </div> --}}
     </div>
 </div>
+
+<script>
+    // line chart displaying daily sales for the last 7 days
+    // each day is a {date: "2021-05-01", revenue: 0} object
+    let daily = [];
+    document.addEventListener("DOMContentLoaded", function (event) {
+        console.log("DOM fully loaded and parsed");
+
+        $.ajax({
+            url: '/statistics/',
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                daily = data.daily;
+                // reverse the array so that the first day is the first element
+                daily.reverse();
+                console.log(daily);
+                let ctx = document.getElementById('weekly').getContext('2d');
+                let chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        // format the date to be displayed as "May 1"
+                        labels: daily.map(d => new Date(d.date).toLocaleDateString('en-UK', {
+                            month: 'short',
+                            day: 'numeric'
+                        })),
+                        datasets: [{
+                            label: 'Daily Sales',
+                            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                            borderColor: '#fff',
+                            data: daily.map(d => d.revenue),
+                            borderWidth: 1,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        legend: {
+                            display: true
+                        },
+                        tooltips: {
+                            mode: 'index',
+                            intersect: false
+                        },
+                        hover: {
+                            mode: 'nearest',
+                            intersect: true
+                        },
+                        scales: {
+                            xAxes: [{
+                                ticks: {
+                                    fontColor: "#fff",
+                                },
+                                gridLines: {
+                                    color: 'rgba(255, 255, 255, 0.1)',
+                                    zeroLineColor: 'rgba(255, 255, 255, 0.1)'
+                                }
+                            }],
+                            yAxes: [{
+                                ticks: {
+                                    fontColor: "#fff",
+                                },
+                                gridLines: {
+                                    color: 'rgba(255, 255, 255, 0.1)',
+                                    zeroLineColor: 'rgba(255, 255, 255, 0.1)'
+                                }
+                            }]
+                        }
+                    }
+                });
+
+                // line chart displaying monthly sales for the last 12 months
+                // each month is a {date: "2021-05-01", revenue: 0} object
+                let monthly = data.monthly;
+                monthly.reverse();
+                console.log(monthly);
+                let ctx2 = document.getElementById('yearly').getContext('2d');
+                let chart2 = new Chart(ctx2, {
+                    type: 'line',
+                    data: {
+                        // format the date to be displayed as "May 1"
+                        labels: monthly.map(d => new Date(d.date).toLocaleDateString('en-UK', {
+                            month: 'short',
+                        })),
+                        datasets: [{
+                            label: 'Monthly Sales',
+                            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                            borderColor: '#fff',
+                            data: monthly.map(d => d.revenue),
+                            borderWidth: 1,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        legend: {
+                            display: true
+                        },
+                        tooltips: {
+                            mode: 'index',
+                            intersect: false
+                        },
+                        hover: {
+                            mode: 'nearest',
+                            intersect: true
+                        },
+                        scales: {
+                            xAxes: [{
+                                ticks: {
+                                    fontColor: "#fff",
+                                },
+                                gridLines: {
+                                    color: 'rgba(255, 255, 255, 0.1)',
+                                    zeroLineColor: 'rgba(255, 255, 255, 0.1)'
+                                }
+                            }],
+                            yAxes: [{
+                                ticks: {
+                                    fontColor: "#fff",
+                                },
+                                gridLines: {
+                                    color: 'rgba(255, 255, 255, 0.1)',
+                                    zeroLineColor: 'rgba(255, 255, 255, 0.1)'
+                                }
+                            }]
+                        }
+                    }
+                });
+
+                // line chart displaying yearly sales for the last 5 years
+                // each year is a {date: "2021-05-01", revenue: 0} object
+                let yearly = data.yearly;
+                yearly.reverse();
+                console.log(yearly);
+                let ctx3 = document.getElementById('anually').getContext('2d');
+                let chart3 = new Chart(ctx3, {
+                    type: 'line',
+                    data: {
+                        // format the date to be displayed as "2021"
+                        labels: yearly.map(d => new Date(d.date).toLocaleDateString('en-UK', {
+                            year: 'numeric',
+                        })),
+                        datasets: [{
+                            label: 'Yearly Sales',
+                            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                            borderColor: '#fff',
+                            data: yearly.map(d => d.revenue),
+                            borderWidth: 1,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        legend: {
+                            display: true
+                        },
+                        tooltips: {
+                            mode: 'index',
+                            intersect: false
+                        },
+                        hover: {
+                            mode: 'nearest',
+                            intersect: true
+                        },
+                        scales: {
+                            xAxes: [{
+                                ticks: {
+                                    fontColor: "#fff",
+                                },
+                                gridLines: {
+                                    color: 'rgba(255, 255, 255, 0.1)',
+                                    zeroLineColor: 'rgba(255, 255, 255, 0.1)'
+                                }
+                            }],
+                            yAxes: [{
+                                ticks: {
+                                    fontColor: "#fff",
+                                },
+                                gridLines: {
+                                    color: 'rgba(255, 255, 255, 0.1)',
+                                    zeroLineColor: 'rgba(255, 255, 255, 0.1)'
+                                }
+                            }]
+                        }
+                    }
+                });
+            }
+        });
+    });
+</script>
 <!-- Chart End -->

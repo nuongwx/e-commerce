@@ -29,6 +29,8 @@ var profileRouter = require('./routes/user/profile');
 
 const adminRouter = require('./routes/admin/index');
 
+const statisticsRouter = require('./routes/admin/statistics/index');
+
 
 
 
@@ -163,6 +165,8 @@ app.use('/auth', function (req, res, next) {
 }, authRouter);
 
 app.use('/', homeRouter);
+
+app.use('/statistics', statisticsRouter);
 
 app.use('/shop', shopRouter);
 
