@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 
 exports.login = function (req, res, next) {
     passport.authenticate('local', function (err, user, info) {
-        if (err) { return next(err); }
+        if (err) { return res.render('auth/index', { title: 'Login', message: err.error, layout: 'auth/layout' }); }
 
         if (!user) {
             return res.render('auth/index', { title: 'Login', message: 'Invalid email or password', layout: 'auth/layout' });
@@ -37,23 +37,20 @@ exports.register = async function (req, res) {
     let email = req.body.email;
     let password = req.body.password;
 
-    if(!email || !password) {
-        return res.status(400).json({error: 'Invalid email and/or password'});
-    } 
-    const tempUser = await db.User.findOne({ where: { email: email }});
-    
+    if (!email || !password) {
+        return res.status(400).json({ error: 'Invalid email and/or password' });
+    }
+    const tempUser = await db.User.findOne({ where: { email: email, verified: true } });
+
     if (tempUser) {
         return res.status(400).json({ error: 'Email already exists' })
     }
 
-    db.User.create({
-        email: email,
-        password: password
-    }).then(function (user) {
+    db.User.findOrCreate({ where: { email: email, verified: false }, defaults: { password: password } }).then(function (user, created) {
         const token = jwt.sign({ _id: user.id }, process.env.TOKEN_SECRET, { expiresIn: '1h' });
-        const link = process.env.HOST + '/auth/verify-email?token=' + token;
+        const link = process.env.HOST + ":" + process.env.PORT + '/auth/verify-email?token=' + token;
         console.log(link);
-        return res.status(200).json({ link: link });
+        return res.status(200).json({ message: link });
     });
 }
 
@@ -77,7 +74,7 @@ exports.verifyEmail = async function (req, res) {
             user.update({
                 verified: true
             }).then(function (user) {
-                return res.redirect('/auth/login');
+                return res.render('auth/index', { title: 'Login', layout: 'auth/layout', message: 'Email verified, please login', login: true });
             });
         }
     }
@@ -96,9 +93,9 @@ exports.forgotPassword = async function (req, res) {
         return res.status(400).json({ error: 'Email does not exist' });
     }
     const token = jwt.sign({ _id: user.id }, process.env.TOKEN_SECRET, { expiresIn: '1h' });
-    const link = process.env.HOST + '/auth/reset-password?token=' + token;
+    const link = process.env.HOST + ":" + process.env.PORT + '/auth/reset-password?token=' + token;
     console.log(link);
-    return res.status(200).json({ link: link });
+    return res.status(200).json({ message: link });
 }
 
 exports.resetPassword = async function (req, res) {
@@ -114,7 +111,7 @@ exports.resetPassword = async function (req, res) {
             user.update({
                 password: password
             }).then(function (user) {
-                return res.redirect('/auth/login');
+                return res.status(200).json({ message: 'Password reset successfully' });
             });
         }
     }

@@ -102,7 +102,7 @@
                             </tr>
                         </tbody>
                     </table>
-                    <button class="boxed-btn" onclick="placeOrder()">Place Order</button>
+                    <button class="btn btn-primary" onclick="placeOrder()">Place Order</button>
                 </div>
             </div>
         </div>
@@ -132,9 +132,7 @@
             },
             success: function (data) {
                 console.log(data);
-                if (data.status == "success") {
-                    window.location.href = "/order/" + data.orderId;
-                }
+                window.location.href = "/order/";
             }
         });
     }

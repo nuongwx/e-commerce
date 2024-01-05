@@ -93,7 +93,7 @@
                 data.products.rows.forEach(function (product) {
                     $('tbody').append(`
                             <tr>
-                                <th scope="row">${product.id}</th>
+                                <td scope="row">${product.id}</td>
                                 <td>${product.name}</td>
                                 <td>${product.category_id}</td>
                                 <td>${product.price}</td>
@@ -133,6 +133,7 @@
             success: function (data) {
                 console.log(data);  
                 $(`tr:has(td:contains(${id}))`).remove();
+
             }
         });
     }

@@ -127,16 +127,7 @@
                             </div>
                         </div> -->
                         {{#each related_products}}
-                        <div class="col-lg-4 col-md-6 text-center">
-                            <div class="single-product-item">
-                                <div class="product-image">
-                                    <a href="/shop/{{this.id}}"><img src="{{this.image}}" alt=""></a>
-                                </div>
-                                <h3>{{this.name}}</h3>
-                                <!-- <p class="product-price"><span>Per Kg</span> {{this.price}} </p>
-                                <a href="/cart" class="cart-btn"><i class="fas fa-shopping-cart"></i> Add to Cart</a> -->
-                            </div>
-                        </div>
+                            {{> product}}
                         {{/each}}
                     </div>
                 </div>

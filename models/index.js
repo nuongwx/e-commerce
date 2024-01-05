@@ -33,7 +33,7 @@ Object.keys(db).forEach(modelName => {
         db[modelName].associate(db);
     }
 });
-if (process.env.NODE_ENV === 'development' || false) {
+if (process.env.NODE_ENV === 'development' || true) {
     db.sequelize.sync({ force: true }).then(() => {
         console.log(`Database & tables created!`);
         db.sequelize.query('ALTER SEQUENCE "Users_id_seq" RESTART WITH 5;');
@@ -59,6 +59,7 @@ if (process.env.NODE_ENV === 'development' || false) {
             email: '11@11.co',
             password: '1',
             status: 'banned',
+            verified: true,
         });
         db.User.create({
             id: 4,
@@ -232,6 +233,35 @@ if (process.env.NODE_ENV === 'development' || false) {
             product_id: 2,
             quantity: 2,
         });
+        let order2 = db.Order.create({
+            user_id: 1,
+            createdAt: new Date('2021-04-01T00:00:00Z'),
+        });
+        db.OrderItem.create({
+            order_id: 2,
+            product_id: 1,
+            quantity: 1,
+        });
+        db.OrderItem.create({
+            order_id: 2,
+            product_id: 2,
+            quantity: 2,
+        });
+        let order3 = db.Order.create({
+            user_id: 1,
+            createdAt: new Date().getTime() - 3 * 24 * 60 * 60 * 1000,
+        });
+        db.OrderItem.create({
+            order_id: 3,
+            product_id: 1,
+            quantity: 9,
+        });
+        db.OrderItem.create({
+            order_id: 3,
+            product_id: 2,
+            quantity: 2,
+        });
+
     });
 } else {
     db.sequelize.sync();

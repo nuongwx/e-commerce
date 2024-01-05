@@ -41,7 +41,7 @@ function getSearchResults() {
                 pagination += '<li><a href="#" rel="' + i + '">' + i + '</a></li>';
             }
             document.querySelector('.pagination-wrap ul').innerHTML = pagination;
-            
+
             let products = Array.from(data.products.rows);
             document.getElementsByClassName("product-lists")[0].innerHTML = "";
             products.forEach(function (product) {
@@ -67,7 +67,7 @@ function getSearchResults() {
                             $(".product-lists").isotope('reloadItems').isotope();
                         });
                     }
-                });                
+                });
             });
             document.getElementsByClassName('active')[0].click();
         }
@@ -100,7 +100,11 @@ function addToCart(id) {
         },
         success: function (data) {
             console.log(data);
-            // document.getElementById('cart-qty').innerHTML = data.totalQty;
+            $('#notify').html('Added to cart');
+            $('#notification').modal('show');
+            $('#close-modal').click(function () {
+                $('#notification').modal('hide');
+            });
         }
     });
 }

@@ -29,6 +29,10 @@
         const status = document.querySelector('#user-status');
         role.value = '{{user.role}}';
         status.value = '{{user.status}}';
+        if('{{user.role}}' === 'admin' && '{{user.id}}' === '{{currentUser.id}}') {
+            role.disabled = true;
+            status.disabled = true;
+        }
     });
 
     function save() {

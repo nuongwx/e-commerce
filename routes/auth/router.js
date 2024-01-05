@@ -22,8 +22,8 @@ router.post('/login', function (req, res, next) {
     passport.authenticate('local', function (err, user, info) {
         console.log('user', user);
         // if (err) { return next(err); }
-        if (err) { console.log(err); return res.redirect('/auth/login'); }
-        if (!user) { return res.redirect('/auth/login'); }
+        if (err) { console.log(err); return res.render('auth/index', { title: 'Login', layout: 'auth/layout', message: err.error, login: true }); }
+        if (!user) { return res.render('auth/index', { title: 'Login', layout: 'auth/layout', message: "Invalid email or password", login: true }); }
         db.Cart.findOne({ where: query }).then(async function (session_cart) {
             let user_cart = await db.Cart.findOne({ where: { user_id: user.id } });
             if (!session_cart && !user_cart) {

@@ -100,7 +100,7 @@
             body: JSON.stringify(data)
         }).then(res => {
             if (res.status === 200) {
-                window.location.href = '/admin/product';
+                window.location.reload();
             }
         })
     }
@@ -113,9 +113,7 @@
             method: 'POST',
             body: formData
         }).then(res => {
-            if (res.status === 200) {
-                window.location.reload();
-            }
+            save();
         })
     }
 
@@ -129,9 +127,7 @@
                 image
             })
         }).then(res => {
-            if (res.status === 200) {
-                window.location.reload();
-            }
+            save();
         })
     }
 

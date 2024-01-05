@@ -130,7 +130,13 @@
                             data: data,
                             success: function (data) {
                                 console.log(data);
-                                window.location.href = '/user/profile';
+                                // show modal
+                                $('#notify').html('<p>' + data.message + '</p>');
+                                $('#notification').modal('show');
+                                $('#close-modal').click(function () {
+                                    window.location.href = '/auth/login';
+                                });
+
                             },
                             error: function (data) {
                                 console.log(data);
@@ -185,7 +191,12 @@
                             data: data,
                             success: function (data) {
                                 console.log(data);
-                                window.location.href = '/auth/login';
+                                $('#notify').html('<p>' + data.message + '</p>');
+                                $('#notification').modal('show');
+                                $('#close-modal').click(function () {
+                                    window.location.href = '/auth/login';
+                                });
+
                             },
                             error: function (data) {
                                 console.log(data);
@@ -264,7 +275,11 @@
                             data: data,
                             success: function (data) {
                                 console.log(data);
-                                window.location.href = '/auth/login';
+                                $('#notify').html('<p>' + data.message + '</p>');
+                                $('#notification').modal('show');
+                                $('#close-modal').click(function () {
+                                    window.location.href = '/auth/login';
+                                });
                             },
                             error: function (data) {
                                 console.log(data);
