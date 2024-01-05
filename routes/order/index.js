@@ -14,6 +14,10 @@ router.post('/', ensureLoggedIn, async function (req, res, next) {
     const order = await db.Order.create({
         user_id: req.user.id,
         status: 'pending',
+        email: req.body.email,
+        phone: req.body.phone,
+        address: req.body.address,
+        note: req.body.note,
     });
     const cart = await db.Cart.findOne({
         where: {

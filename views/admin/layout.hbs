@@ -80,9 +80,10 @@
                     --}}
                     {{!-- <a href="table" class="nav-item nav-link"><i class="fa fa-table me-2"></i>Tables</a> --}}
                     {{!-- <a href="users" class="nav-item nav-link"><i class="fa fa-table me-2"></i>Tables</a> --}}
+                    <a href="/admin/users" class="nav-item nav-link"><i class="fa fa-table me-2"></i>Users</a>
+                    <a href="/admin/categories" class="nav-item nav-link"><i class="fa fa-table me-2"></i>Categories</a>
                     <a href="/admin/product" class="nav-item nav-link"><i class="fa fa-table me-2"></i>Products</a>
                     <a href="/admin/orders" class="nav-item nav-link"><i class="fa fa-table me-2"></i>Orders</a>
-                    <a href="/admin/users" class="nav-item nav-link"><i class="fa fa-table me-2"></i>Users</a>
                     <a href="/admin/statistics" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Statistics</a>
 
 
@@ -230,6 +231,15 @@
     <script src="/assets/lib/tempusdominus/js/moment.min.js"></script>
     <script src="/assets/lib/tempusdominus/js/moment-timezone.min.js"></script>
     <script src="/assets/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+    <script src="/assets/bootstrap/js/bootstrap.min.js"></script>
+    <script>
+        //active owl carousel
+        document.addEventListener("DOMContentLoaded", function () {
+            $('.owl-carousel').owlCarousel({
+                
+            });
+        });
+    </script>
 
     <!-- Template Javascript -->
     <script src="/assets/js/main_admin.js"></script>

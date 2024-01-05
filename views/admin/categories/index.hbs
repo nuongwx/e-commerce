@@ -1,0 +1,133 @@
+<!-- editing modal -->
+<div class="modal fade" id="edit" tabindex="-1" role="dialog" aria-labelledby="edit" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content bg-secondary">
+            <div class="modal-header">
+                <h6>Edit Category</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" id="close-modal">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="notify">
+                <form onsubmit="editCategory(document.getElementById('category-id').value);return false;">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="category-name" value="{{category.name}}" required>
+                        <label for="category-name">Category Name</label>
+                    </div>
+                    <input type="hidden" id="category-id" value="{{category.id}}">
+                    <button type="submit" class="btn btn-primary">Save</button>                    
+                </form>
+            </div>
+            {{!-- product table --}}
+            <div class="modal-body" id="product-table-modal" style="display: none;">
+                <div class="table-responsive">
+                    <table class="table table-hover" id="product-table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Product ID</th>
+                                <th scope="col">Product Name</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="bg-secondary rounded h-100 p-4">
+                <h6 class="mb-4">Categories</h6>
+                <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#edit" onclick="document.getElementById('category-name').value = '';document.getElementById('category-id').value = '';document.getElementById('category-name').focus(); document.getElementById('product-table-modal').style.display = 'none';">Add Category</button>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">Category</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each categories}}
+                            <tr>
+                                <th scope="row">{{this.id}}</th>
+                                <td>{{this.name}}</td>
+                                <td>
+                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal"
+                                        data-target="#edit" onclick="document.getElementById('category-name').value = '{{this.name}}';document.getElementById('category-id').value = '{{this.id}}';document.getElementById('category-name').focus(); document.getElementById('product-table-modal').style.display = ''; getProductList({{this.id}})">Edit</button>
+                                    <button type="button" class="btn btn-danger btn-sm" onclick="deleteCategory({{this.id}})">Delete</button>
+                                </td>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function editCategory(id) {
+        const name = document.getElementById('category-name').value;
+        const category = {
+            name: name
+        };
+        $.ajax({
+            url: '/admin/categories/' + id,
+            type: 'POST',
+            data: JSON.stringify(category),
+            contentType: 'application/json',
+            success: function (result) {
+                window.location.reload();
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        });
+    }
+    function deleteCategory(id) {
+        $.ajax({
+            url: '/admin/categories/' + id,
+            type: 'DELETE',
+            success: function (result) {
+                window.location.reload();
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        });
+    }
+    function getProductList(id) {
+        $.ajax({
+            url: '/admin/categories/' + id,
+            type: 'GET',
+            success: function (result) {
+                console.log(result);
+                $(".modal-body #product-table tbody").empty();
+                result.map((item) => {
+                    const row = `<tr>
+                                    <td>${item.id}</td>
+                                    <td>${item.name}</td>
+                                    <td>
+                                        <a href="/admin/product/${item.id}" class="btn btn-primary btn-sm">Edit</a>
+                                    </td>
+                                </tr>`;
+                    $(".modal-body #product-table tbody").append(row);
+                });
+                $(".modal-body #notify").show();
+
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        })
+    }
+</script>

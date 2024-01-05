@@ -19,12 +19,11 @@
                                 data-parent="#accordionExample">
                                 <div class="card-body">
                                     <div class="billing-address-form">
-                                        <form action="/index">
-                                            <p><input type="text" placeholder="Name"></p>
-                                            <p><input type="email" placeholder="Email"></p>
-                                            <p><input type="text" placeholder="Address"></p>
-                                            <p><input type="tel" placeholder="Phone"></p>
-                                            <p><textarea name="bill" id="bill" cols="30" rows="10"
+                                        <form id="checkout-form" onsubmit="placeOrder();return false;">
+                                            <p><input type="email" placeholder="Email" id="email" required></p>
+                                            <p><input type="text" placeholder="Address" id="address" required></p>
+                                            <p><input type="tel" placeholder="Phone" id="phone" required></p>
+                                            <p><textarea name="note" id="note" cols="30" rows="10"
                                                     placeholder="Say Something"></textarea></p>
                                         </form>
                                     </div>
@@ -102,7 +101,7 @@
                             </tr>
                         </tbody>
                     </table>
-                    <button class="btn btn-primary" onclick="placeOrder()">Place Order</button>
+                    <button class="btn btn-primary" form="checkout-form" type="submit">Place Order</button>
                 </div>
             </div>
         </div>
@@ -128,7 +127,11 @@
             type: "POST",
             data: {
                 items: items,
-                what: items
+                email: $("#email").val(),
+                address: $("#address").val(),
+                phone: $("#phone").val(),
+                note: $("#note").val()
+
             },
             success: function (data) {
                 console.log(data);
@@ -136,4 +139,8 @@
             }
         });
     }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        $("#email").val("{{user.email}}");
+    });
 </script>

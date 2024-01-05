@@ -60,6 +60,20 @@
                                     row.append(total);
                                     orderDetailsTable.append(row);
                                 }
+                                // add info to below table
+                                var billingDetails = $('#billing-details');
+                                billingDetails.empty();
+                                var email = $('<p><strong>Email: </strong>' + order.email + '</p>');
+                                var address = $('<p><strong>Address: </strong>' + order.address + '</p>');
+                                var phone = $('<p><strong>Phone: </strong>' + order.phone + '</p>');
+                                var note = $('<p><strong>Note: </strong>' + order.note + '</p>');
+                                billingDetails.append(email);
+                                billingDetails.append(address);
+                                billingDetails.append(phone);
+                                billingDetails.append(note);
+
+
+
                             }
                         });
                     });
@@ -78,15 +92,21 @@
                             </tr>
                         </thead>
                         <tbody>
+                            <tr span="4">
+                                <td colspan="4">Select an order to view details</td>
+                            </tr>
                         </tbody>
                     </table>
-                    <div class="cart-buttons">
+                    {{!-- billing details --}}
+                    <div class="billing-details" id="billing-details">
+                    </div>
+                    <!-- <div class="cart-buttons">
                         <a href="/cart" class="boxed-btn">Update Cart</a>
                         <a href="/checkout" class="boxed-btn black">Check Out</a>
-                    </div>
+                    </div> -->
                 </div>
 
-                <div class="coupon-section">
+                <!-- <div class="coupon-section">
                     <h3>Apply Coupon</h3>
                     <div class="coupon-form-wrap">
                         <form action="/index">
@@ -94,7 +114,7 @@
                             <p><input type="submit" value="Apply"></p>
                         </form>
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
     </div>

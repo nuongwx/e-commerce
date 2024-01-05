@@ -1,6 +1,15 @@
 const passport = require('../../middleware/passport');
 const db = require('../../models/index');
 const jwt = require('jsonwebtoken');
+const nodemailer = require('nodemailer');
+
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: process.env.EMAIL,
+        pass: process.env.EMAIL_PASSWORD
+    }
+});
 
 exports.login = function (req, res, next) {
     passport.authenticate('local', function (err, user, info) {
@@ -46,10 +55,23 @@ exports.register = async function (req, res) {
         return res.status(400).json({ error: 'Email already exists' })
     }
 
-    db.User.findOrCreate({ where: { email: email, verified: false }, defaults: { password: password } }).then(function (user, created) {
-        const token = jwt.sign({ _id: user.id }, process.env.TOKEN_SECRET, { expiresIn: '1h' });
-        const link = process.env.HOST + ":" + process.env.PORT + '/auth/verify-email?token=' + token;
+    await db.User.findOrCreate({ where: { email: email, verified: false }, defaults: { password: password } }).then(function (user, created) {
+        const token = jwt.sign({ _id: user[0].id }, process.env.TOKEN_SECRET, { expiresIn: '1h' });
+        const link = "http://" + process.env.HOST + ":" + process.env.PORT + '/auth/verify-email?token=' + token;
         console.log(link);
+        transporter.sendMail({
+            from: process.env.EMAIL,
+            to: email,
+            subject: 'Verify Email',
+            html: link,
+        }, function (err, info) {
+            if (err) {
+                console.log(err);
+            }
+            else {
+                console.log('Email sent: ' + info.response);
+            }
+        });
         return res.status(200).json({ message: link });
     });
 }
@@ -93,8 +115,21 @@ exports.forgotPassword = async function (req, res) {
         return res.status(400).json({ error: 'Email does not exist' });
     }
     const token = jwt.sign({ _id: user.id }, process.env.TOKEN_SECRET, { expiresIn: '1h' });
-    const link = process.env.HOST + ":" + process.env.PORT + '/auth/reset-password?token=' + token;
+    const link = "http://" + process.env.HOST + ":" + process.env.PORT + '/auth/reset-password?token=' + token;
     console.log(link);
+    transporter.sendMail({
+        from: process.env.EMAIL,
+        to: email,
+        subject: 'Reset Password',
+        html: link,
+    }, function (err, info) {
+        if (err) {
+            console.log(err);
+        }
+        else {
+            console.log('Email sent: ' + info.response);
+        }
+    });
     return res.status(200).json({ message: link });
 }
 

@@ -31,7 +31,7 @@ router.post('/login', function (req, res, next) {
             }
             else if (session_cart && !user_cart) {
                 session_cart.user_id = user.id;
-                session_cart.save();
+                await session_cart.save();
             }
             else if(session_cart && user_cart) {
                 let session_cart_items = await db.CartItem.findAll({ where: { cart_id: session_cart.id } });
@@ -40,14 +40,14 @@ router.post('/login', function (req, res, next) {
                     let user_cart_item = await db.CartItem.findOne({ where: { cart_id: user_cart.id, product_id: session_cart_item.product_id } });
                     if (user_cart_item) {
                         user_cart_item.quantity += session_cart_item.quantity;
-                        user_cart_item.save();
+                        await user_cart_item.save();
                     }
                     else {
                         session_cart_item.cart_id = user_cart.id;
-                        session_cart_item.save();
+                        await session_cart_item.save();
                     }
                 }
-                session_cart.destroy();
+                await session_cart.destroy();
             }
             req.logIn(user, function (err) {
                 if (err) { return next(err); }

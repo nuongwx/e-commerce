@@ -5,6 +5,7 @@ const productRouter = require('./products/index');
 const orderRouter = require('./orders/index');
 const userRouter = require('./users/index');
 const profileRouter = require('./profile/index');
+const categoryRouter = require('./categories/index');
 
 const db = require('../../models');
 
@@ -33,6 +34,8 @@ router.use('/product', productRouter);
 router.use('/orders', orderRouter);
 
 router.use('/users', userRouter);
+
+router.use('/categories', categoryRouter);
 
 router.use('/profile', profileRouter);
 

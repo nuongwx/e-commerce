@@ -6,6 +6,14 @@
                 <div class="single-product-img">
                     <img src="{{product.image}}" alt="">
                 </div>
+                {{!-- owl-carousel --}}
+                <div class="owl-carousel owl-theme single-product-slider">
+                    {{#each product.images}}
+                    <div class="item">
+                        <img src="{{this}}" alt="">
+                    </div>
+                    {{/each}}
+                </div>
             </div>
             <div class="col-md-7">
                 <div class="single-product-content">
