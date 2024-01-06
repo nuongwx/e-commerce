@@ -39,7 +39,8 @@
                         <label for="product-name">Product Name</label>
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="number" class="form-control" id="product-price" value="{{product.price}}" required>
+                        <input type="number" class="form-control" id="product-price" value="{{product.price}}" min="0"
+                            required>
                         <label for="product-price">Price</label>
                     </div>
                     <div class="form-floating mb-3">
