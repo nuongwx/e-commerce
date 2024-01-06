@@ -131,7 +131,7 @@
                             success: function (data) {
                                 console.log(data);
                                 // show modal
-                                $('#notify').html('<p>' + data.message + '</p>');
+                                $('#notify').html('<p>Account created successfully.</p>\n<p>Please check your email to verify your account.</p>');
                                 $('#notification').modal('show');
                                 $('#close-modal').click(function () {
                                     window.location.href = '/auth/login';
@@ -191,7 +191,7 @@
                             data: data,
                             success: function (data) {
                                 console.log(data);
-                                $('#notify').html('<p>' + data.message + '</p>');
+                                $('#notify').html('<p>Password reset email sent successfully.</p>\n<p>Please check your email.</p>');
                                 $('#notification').modal('show');
                                 $('#close-modal').click(function () {
                                     window.location.href = '/auth/login';
@@ -275,7 +275,7 @@
                             data: data,
                             success: function (data) {
                                 console.log(data);
-                                $('#notify').html('<p>' + data.message + '</p>');
+                                $('#notify').html('<p>Password reset successfully.</p>\n<p>Please login with your new password.</p>');
                                 $('#notification').modal('show');
                                 $('#close-modal').click(function () {
                                     window.location.href = '/auth/login';
