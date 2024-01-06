@@ -29,9 +29,6 @@
                     <div class="col-auto">
                         <button type="submit" class="btn btn-primary">Filter</button>
                     </div>
-                    <div class="col-auto ms-auto">
-                        <a href="/admin/users" class="btn btn-primary">Create</a>
-                    </div>
                 </form>
                 <div class="table-responsive">
                     <table class="table table-hover">
@@ -81,7 +78,7 @@
                             <td>${user.status}</td>
                             <td>
                                 <a href="/admin/users/${user.id}" class="btn btn-primary btn-sm">Edit</a>
-                                <a href="/admin/users/delete/${user.id}" class="btn btn-danger btn-sm">Delete</a>
+                                <button type="button" class="btn btn-danger btn-sm" onclick="deleteUsers(${user.id})">Delete</button>
                             </td>
                         </tr>
                     `);
@@ -99,6 +96,15 @@
                 } else {
                     $('#prev-btn').show();
                 }
+            }
+        });
+    }
+    function deleteUsers(id) {
+        $.ajax({
+            url: '/admin/users/' + id,
+            type: 'DELETE',
+            success: function(data) {
+                window.location.reload();
             }
         });
     }
