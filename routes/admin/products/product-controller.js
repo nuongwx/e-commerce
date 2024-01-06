@@ -58,9 +58,8 @@ exports.addImage = async (req, res, next) => {
         console.log(result);
 
         product = await db.Product.findOne({ where: { id: id } });
-        product.update({ images: db.sequelize.fn('array_append', db.sequelize.col('images'), result.url) });
-
-        return res.json(product);
+        await product.update({ images: db.sequelize.fn('array_append', db.sequelize.col('images'), result.url) });
+        return res.json(await db.Product.findOne({ where: { id: id } }));
     }).end(req.files.image.data);
 
     // // product.images.push(req.files.image.name);
@@ -82,7 +81,7 @@ exports.removeImage = async (req, res, next) => {
         product.update({ images: db.sequelize.fn('array_remove', db.sequelize.col('images'), req.body.image) });
     }
     await product.save();
-    return res.json(product);
+    return res.json(await db.Product.findOne({ where: { id: id } }));
 }
 
 exports.getProducts = function (req, res, next) {

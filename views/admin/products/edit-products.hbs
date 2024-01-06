@@ -120,26 +120,54 @@
         const formData = new FormData();
         formData.append('image', file);
 
-        fetch('/admin/product/{{product.id}}/image', {
-            method: 'POST',
-            body: formData
-        }).then(res => {
-            save();
-        })
+        $.ajax({
+            url: '/admin/product/{{product.id}}/image',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                console.log(data);
+                $('.single-product-slider').owlCarousel('destroy');
+                $('.single-product-slider').html('');
+                data.images.forEach(image => {
+                    $('.single-product-slider').append(`
+                    <div class="item">
+                        <img src="${image}" alt="">
+                        <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0"
+                            onclick="deleteImage('${image}')"><i class="fas fa-trash"></i></button>
+                    </div>
+                    `);
+                });
+                $('.single-product-slider').owlCarousel();
+            }
+        });
     }
 
     function deleteImage(image) {
-        fetch('/admin/product/{{product.id}}/image', {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
+        $.ajax({
+            url: '/admin/product/{{product.id}}/image',
+            type: 'DELETE',
+            contentType: 'application/json',
+            data: JSON.stringify({
                 image
-            })
-        }).then(res => {
-            save();
-        })
+            }),
+            success: function (data) {
+                console.log(data);
+                $('.single-product-slider').owlCarousel('destroy');
+                $('.single-product-slider').html('');
+                data.images.forEach(image => {
+                    $('.single-product-slider').append(`
+                    <div class="item">
+                        <img src="${image}" alt="">
+                        <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0"
+                            onclick="deleteImage('${image}')"><i class="fas fa-trash"></i></button>
+                    </div>
+                    `);
+                });
+                $('.single-product-slider').owlCarousel();
+            }
+        });
     }
 
 </script>

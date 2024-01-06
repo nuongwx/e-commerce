@@ -3,11 +3,11 @@
     <div class="container-fluit pt-4 px-4">
         <div class="row bg-secondary justify-content-center rounded pt-5">
             <div class="col-md-3 text-center pt-5">
-                <img src="{{user.image}}" alt="blank" class="img-fluid">
+                <img src="{{target.image}}" alt="blank" class="img-fluid">
             </div>
             <div class="mb-3">
                 <label for="email" class="form-label">Email</label>
-                <input type="email" class="form-control bg-dark" id="email" value="{{user.email}}" disabled>
+                <input type="email" class="form-control bg-dark" id="email" value="{{target.email}}" disabled>
                 <label for="user-role">Role</label>
                 <select class="form-select" id="user-role" aria-label="Role" required onchange="save()">
                     <option value="admin">Admin</option>
@@ -27,9 +27,9 @@
     document.addEventListener("DOMContentLoaded", function () {
         const role = document.querySelector('#user-role');
         const status = document.querySelector('#user-status');
-        role.value = '{{user.role}}';
-        status.value = '{{user.status}}';
-        if('{{user.role}}' === 'admin' && '{{user.id}}' === '{{currentUser.id}}') {
+        role.value = '{{target.role}}';
+        status.value = '{{target.status}}';
+        if('{{target.role}}' === 'admin' && '{{target.id}}' === '{{user.id}}') {
             role.disabled = true;
             status.disabled = true;
         }
@@ -42,7 +42,7 @@
             role,
             status
         };
-        fetch(`/admin/users/{{user.id}}`, {
+        fetch(`/admin/users/{{target.id}}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'

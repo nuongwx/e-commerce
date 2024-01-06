@@ -66,7 +66,7 @@ router.get('/query', async function (req, res, next) {
 
 router.get('/:id', async function (req, res, next) {
     db.User.findByPk(req.params.id).then(function (user) {
-        res.render('admin/users/edit-user', { title: 'Admin', currentUser: req.user, user: user });
+        res.render('admin/users/edit-user', { title: 'Admin', target: user });
         // res.json(user);
     });
 });

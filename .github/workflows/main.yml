@@ -18,6 +18,6 @@ jobs:
         echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
         ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
     - name: connect and pull
-      run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} -i "~/.ssh/id_rsa" "killall node & cd /home/ubuntu/CSC13008/e-commerce && git checkout master && git pull && npm install --verbose && NODE_ENV=development && (nohup npm start > /dev/null 2>&1 &) && exit"
+      run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} -i "~/.ssh/id_rsa" "killall node & cd /home/ubuntu/CSC13008/e-commerce && git checkout master && git pull && npm install --verbose && (nohup npm start > /dev/null 2>&1 &) && exit"
     - name: cleanup
       run: rm -rf ~/.ssh

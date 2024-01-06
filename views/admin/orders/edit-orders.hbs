@@ -58,17 +58,12 @@
 }
 
 --}}
-<nav>
-    <div class="nav nav-tabs" id="nav-tab" role="tablist">
-        <a class="nav-link" id="nav-order-tab" data-toggle="tab" href="/admin/orders">Back</a>
-    </div>
-</nav>
 
 <div class="container fluid pt-4 px-4">
     <div class="row">
         <div class="col-8">
             <div class="bg-secondary rounded h-100 p-4">
-                <h1>Order Detail</h1>
+                <h1>Order Contents</h1>
                 <table class="table table-striped">
                     <thead>
                         <tr>
@@ -95,7 +90,7 @@
         {{!-- order's other details and status update --}}
         <div class="col-4">
             <div class="bg-secondary rounded h-100 p-4">
-                <h1>Order Details</h1>
+                <h1>Order <Details></Details></h1>
                 <div class="form-group">
                     <label for="status">Status</label>
                     <select class="form-control" id="status">
@@ -104,6 +99,14 @@
                         <option value="cancelled">Cancelled
                         </option>
                     </select>
+                </div>
+                <div class="form-group">
+                    <p>Order ID: {{order.id}}</p>
+                    <p>Order Date: {{order.createdAt}}</p>
+                    <p>Customer: {{order.email}}</p>
+                    <p>Address: {{order.address}}</p>
+                    <p>Phone: {{order.phone}}</p>
+                    <p>Note: {{order.note}}</p>
                 </div>
             </div>
         </div>
