@@ -84,8 +84,11 @@ router.put('/:id', function (req, res, next) {
 
 router.delete('/:id', function (req, res, next) {
     db.User.findByPk(req.params.id).then(function (user) {
+        if(user.id === req.user.id) {
+            return res.status(403).json({ message: 'You cannot delete your own account.' });
+        }
         user.destroy().then(function (user) {
-            res.redirect('/admin/users');
+            return res.json({ message: 'User deleted.' });
         });
     });
 });

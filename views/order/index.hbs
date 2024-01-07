@@ -60,6 +60,7 @@
                                     row.append(total);
                                     orderDetailsTable.append(row);
                                 }
+                                orderDetailsTable.append('<tr class="total-data"><td colspan="4">Total: ' + order.total + '</td></tr>');
                                 // add info to below table
                                 var billingDetails = $('#billing-details');
                                 billingDetails.empty();

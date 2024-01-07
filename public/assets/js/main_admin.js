@@ -210,3 +210,86 @@
     
 })(jQuery);
 
+function drawChart() {
+    $.ajax({
+        url: '/statistics/',
+        type: 'GET',
+        dataType: 'json',
+        success: function (data) {
+            daily = data.daily;
+            // reverse the array so that the first day is the first element
+            daily.reverse();
+            console.log(daily);
+            let ctx = document.getElementById('weekly').getContext('2d');
+            let chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    // format the date to be displayed as "May 1"
+                    labels: daily.map(d => new Date(d.date).toLocaleDateString('en-UK', {
+                        month: 'short',
+                        day: 'numeric'
+                    })),
+                    datasets: [{
+                        label: 'Daily Sales',
+                        backgroundColor: "rgba(235, 22, 22, .5)",
+                        data: daily.map(d => d.revenue),
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                }
+            });
+
+            // line chart displaying monthly sales for the last 12 months
+            // each month is a {date: "2021-05-01", revenue: 0} object
+            let monthly = data.monthly;
+            monthly.reverse();
+            console.log(monthly);
+            let ctx2 = document.getElementById('yearly').getContext('2d');
+            let chart2 = new Chart(ctx2, {
+                type: 'line',
+                data: {
+                    // format the date to be displayed as "May 1"
+                    labels: monthly.map(d => new Date(d.date).toLocaleDateString('en-UK', {
+                        month: 'short',
+                    })),
+                    datasets: [{
+                        label: 'Monthly Sales',
+                        backgroundColor: "rgba(235, 22, 22, .5)",
+                        data: monthly.map(d => d.revenue),
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                }
+            });
+
+            // line chart displaying yearly sales for the last 5 years
+            // each year is a {date: "2021-05-01", revenue: 0} object
+            let yearly = data.yearly;
+            yearly.reverse();
+            console.log(yearly);
+            let ctx3 = document.getElementById('anually').getContext('2d');
+            let chart3 = new Chart(ctx3, {
+                type: 'line',
+                data: {
+                    // format the date to be displayed as "2021"
+                    labels: yearly.map(d => new Date(d.date).toLocaleDateString('en-UK', {
+                        year: 'numeric',
+                    })),
+                    datasets: [{
+                        label: 'Yearly Sales',
+                        backgroundColor: "rgba(235, 22, 22, .5)",
+                        data: yearly.map(d => d.revenue),
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                }
+            });
+        }
+    });
+}

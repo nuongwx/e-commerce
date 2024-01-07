@@ -132,7 +132,7 @@
             type: 'DELETE',
             success: function (data) {
                 console.log(data);  
-                $(`tr:has(td:contains(${id}))`).remove();
+                window.location.reload();
 
             }
         });

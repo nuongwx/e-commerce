@@ -5,7 +5,7 @@ exports.showProduct = async (req, res, next) => {
         return res.redirect('/shop');
     }
     let id = req.params.id;
-    let product = await db.Product.findOne({ where: { id: id } });
+    let product = await db.Product.findOne({ where: { id: id }, include: { model: db.Category } });
     if (!product) {
         return res.redirect('/shop');
     }

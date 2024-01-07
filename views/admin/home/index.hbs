@@ -5,8 +5,8 @@
             <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
                 <i class="fa fa-chart-line fa-3x text-primary"></i>
                 <div class="ms-3">
-                    <p class="mb-2">Today Sale</p>
-                    <h6 class="mb-0">$1234</h6>
+                    <p class="mb-2">Daily Revenue</p>
+                    <h6 class="mb-0" id="daily-revenue">$0</h6>
                 </div>
             </div>
         </div>
@@ -14,8 +14,8 @@
             <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
                 <i class="fa fa-chart-bar fa-3x text-primary"></i>
                 <div class="ms-3">
-                    <p class="mb-2">Total Sale</p>
-                    <h6 class="mb-0">$1234</h6>
+                    <p class="mb-2">Weekly Revenue</p>
+                    <h6 class="mb-0" id="weekly-revenue">$0</h6>
                 </div>
             </div>
         </div>
@@ -23,8 +23,8 @@
             <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
                 <i class="fa fa-chart-area fa-3x text-primary"></i>
                 <div class="ms-3">
-                    <p class="mb-2">Today Revenue</p>
-                    <h6 class="mb-0">$1234</h6>
+                    <p class="mb-2">Monthly Revenue</p>
+                    <h6 class="mb-0" id="monthly-revenue">$0</h6>
                 </div>
             </div>
         </div>
@@ -32,8 +32,8 @@
             <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
                 <i class="fa fa-chart-pie fa-3x text-primary"></i>
                 <div class="ms-3">
-                    <p class="mb-2">Total Revenue</p>
-                    <h6 class="mb-0">$1234</h6>
+                    <p class="mb-2">All Time Revenue</p>
+                    <h6 class="mb-0" id="yearly-revenue">$0</h6>
                 </div>
             </div>
         </div>
@@ -45,6 +45,7 @@
 <!-- Sales Chart Start -->
 <div class="container-fluid pt-4 px-4">
     <div class="row g-4">
+        <!--
         <div class="col-sm-12 col-xl-6">
             <div class="bg-secondary text-center rounded p-4">
                 <div class="d-flex align-items-center justify-content-between mb-4">
@@ -53,22 +54,56 @@
                 </div>
                 <canvas id="worldwide-sales"></canvas>
             </div>
-        </div>
-        <div class="col-sm-12 col-xl-6">
+        </div> -->
+        <div class="col-sm-12 col-xl-12 vh-50">
             <div class="bg-secondary text-center rounded p-4">
                 <div class="d-flex align-items-center justify-content-between mb-4">
-                    <h6 class="mb-0">Salse & Revenue</h6>
-                    <a href="">Show All</a>
+                    <h6 class="mb-0">Daily Revenue</h6>
+                    <a href="/admin/orders">Show All</a>
                 </div>
-                <canvas id="salse-revenue"></canvas>
+                <canvas id="weekly"></canvas>
             </div>
         </div>
     </div>
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        drawChart();
+        $.ajax({
+            url: "/statistics",
+            type: "GET",
+            dataType: "json",
+            success: function (data) {
+                console.log(data);
+                let dailyRevenue = data.daily[0].revenue;
+                let weeklyRevenue = 0;
+                let monthlyRevenue = 0;
+                let yearlyRevenue = 0;
+                
+                for(let i = 0; i < data.daily.length; i++) {
+                    weeklyRevenue += data.daily[i].revenue;
+                }
+
+                for(let i = 0; i < data.monthly.length; i++) {
+                    monthlyRevenue += data.monthly[i].revenue;
+                }
+
+                for(let i = 0; i < data.yearly.length; i++) {
+                    yearlyRevenue += data.yearly[i].revenue;
+                }
+                
+                document.getElementById("daily-revenue").innerHTML = "$" + dailyRevenue;
+                document.getElementById("weekly-revenue").innerHTML = "$" + weeklyRevenue;
+                document.getElementById("monthly-revenue").innerHTML = "$" + monthlyRevenue;
+                document.getElementById("yearly-revenue").innerHTML = "$" + yearlyRevenue;
+            },
+        });
+    });
+</script>
 <!-- Sales Chart End -->
 
 
-<!-- Recent Sales Start -->
+<!-- Recent Sales Start
 <div class="container-fluid pt-4 px-4">
     <div class="bg-secondary text-center rounded p-4">
         <div class="d-flex align-items-center justify-content-between mb-4">
@@ -138,8 +173,8 @@
             </table>
         </div>
     </div>
-</div>
-<!-- Recent Sales End -->
+</div> 
+Recent Sales End -->
 
 
 {{!-- <!-- Widgets Start -->
